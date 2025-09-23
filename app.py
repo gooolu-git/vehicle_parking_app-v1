@@ -1,0 +1,11 @@
+from flask import Flask , request,render_template
+
+
+app = Flask(__name__)
+
+import config
+import models
+import routes
+
+if __name__ == "__main__":
+    app.run(debug=True)

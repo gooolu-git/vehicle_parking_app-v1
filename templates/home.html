@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block title %}
+ParkMatrix | Park Here Roam Anywhere
+{% endblock %}
+{% block content %}
+<div class="container-fluid"
+    style="width: 100vw; height: 90vh; position: absolute; top: 8vh; background-color: rgba(182, 238, 160, 0.3); opacity: 0.7;">
+</div>
+<div class="container-fluid d-flex justify-content-center align-items-center m-0 p-0 z-index5"
+    style="top: 0; height: 77vh;">
+    <img src="/static/bg4.gif " alt="" class="img-fluid" style=" height: 90vh;">
+    <div class="container-lg" style="position: absolute; top:45%; color: rgb(134, 231, 55); opacity: 0.8;">
+        <p class="text-center" style="font-size: 4.5rem; font-weight: bolder;">
+            Park here, roam anywhere.
+        </p>
+        <h4 class="text-center justify-content-center bolder fs-2">Smart, simple & reliable parking management.</h4>
+        <div class="d-grid gap-2 d-md-flex justify-content-center">
+            <a href="{{ url_for('login') }}"><button class="btn btn-outline-danger me-md-2 " type="button"><h3 class="text-center">Log In</h3></button></a>
+            <a href="{{ url_for('register') }}"><button class="btn btn-warning" type="button"><h3 class="text-center">Sign In</h3></button></a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+
+{% endblock %}

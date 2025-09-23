@@ -1,0 +1,105 @@
+{% extends 'layout.html' %}
+{% block title %}
+Admin | Parkmatrix
+{% endblock %}
+{% block style %}
+
+{% endblock %}
+{% block content %}
+<h1 class="dispaly-1 text-center m-4">Admin Dashboard</h1>
+<div class="continer-fluid">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-3 border border-1 rounded ">
+                <div class="block">
+                    <h3>Heading</h3>
+                    <p>ONE</p>
+                </div>
+            </div>
+            <div class="col-3 border border-1 rounded">
+                <div class="block">
+                    <h3>Heading</h3>
+                    <p>ONE</p>
+                </div>
+            </div>
+            <div class="col-3 border border-1 rounded">
+                <div class="block" style="height:200px; background-color:rgb(38, 38, 230);">
+                    <h3>Heading</h3>
+                    <p>ONE</p>
+                </div>
+            </div>
+            <div class="col-3 border border-1 rounded">
+                <div class="block">
+                    <h3>Heading</h3>
+                    <p>ONE</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="continer-fluid m-3 p-3">
+    <div class="container">
+        <p>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+                <h2>+ Add Parking Lot</h2>
+                
+            </button>
+        </p>
+        <div style="min-height: 120px;">
+            <div class="collapse collapse-horizontal" id="collapseWidthExample">
+                <div class="card card-body" style="width: 800px;">
+                    <form class="row g-3" action="create_lot" method="post">
+                        <button class="btn btn-primary text-center" type="button"><h2>+Add Parking Lot</h2></button>
+
+                        <div class="col-md-6">
+                            <label for="inputEmail4" class="form-label">Location Name</label>
+                            <input type="text" class="form-control shadow" id="inputEmail4" name="location_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputPassword4" class="form-label">Pin Code</label>
+                            <input type="text" class="form-control shadow" id="inputPassword4" name="pin_code" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="inputAddress" class="form-label">Address</label>
+                            <input type="text" class="form-control shadow" id="inputAddress" name="adress" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputEmail4" class="form-label">Price Per Hour</label>
+                            <input type="number" class="form-control shadow" id="inputEmail4" name="price">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputPassword4" class="form-label">Total Parking Spot</label>
+                            <input type="number" class="form-control shadow" id="inputPassword4" name="spots">
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary"><h3>Add Parking Lot</h3></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-lg">
+    <h1 class="text-center dispaly-1">Manage Lots</h1>
+    <table class="table table-danger">
+          <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Location Name</th>
+      <th scope="col">Adress</th>
+      <th scope="col">Pin Code</th>
+      <th scope="col">Total Spots</th>
+      <th scope="col">Availabe Spots</th>
+      <th scope="col">Occupied</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+    </table>
+
+</div>
+{% endblock %}
+{% block footer %}
+
+{% endblock %}

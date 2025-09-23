@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% block title %}
+Login | ParkMatrix
+{% endblock %}
+{% block style %}
+{% endblock %}
+{% block content %}
+<div class="container-lg p-2 position-absolute ">
+    <form action="/login" method="post">
+        <div class="mb-3 row">
+            <label for="inputPassword" class="col-sm-10 col-form-label">UserName</label>
+            <div class="col-sm-5">
+                <input type="password" class="form-control" id="inputPassword" required name="username">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="inputPassword" class="col-sm-10 col-form-label">Password</label>
+            <div class="col-sm-5">
+                <input type="password" class="form-control" id="inputPassword" required name="password">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </div>
+
+            <div class="col-md-4">
+                <span class="form-text mx-2">New User...?</span><a href="{{ url_for('register') }}" class="btn btn-primary">signup</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
