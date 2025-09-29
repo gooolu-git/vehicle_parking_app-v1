@@ -2,12 +2,9 @@
 {% block title %}
 ParkMatrix | Registration
 {% endblock %}
-{% block style %}
-  <link rel="stylesheet" href="/static/log_sin.css">  
-{% endblock %}
 {% block content %}
-  <div class="container d-flex justify-content-center align-items-center min-vh-100">
-  <div class="card p-4" style="width: 100%; max-width: 400px;">
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card p-4 border-0 shadow-lg" style="width: 100%; max-width: 400px;">
     <h3 class="heading text-center mb-4">Register Yourself...</h3>
     <form action="/register" method="post">
       <div class="mb-3 form-floating">
@@ -26,7 +23,8 @@ ParkMatrix | Registration
       </div>
 
       <div class="mb-3 form-floating">
-        <input type="password" name="recheck_password" id="user_password_confirm" class="form-control" placeholder=" " required>
+        <input type="password" name="recheck_password" id="user_password_confirm" class="form-control" placeholder=" "
+          required>
         <label for="user_password_confirm">Confirm Password</label>
       </div>
 
@@ -34,13 +32,10 @@ ParkMatrix | Registration
         <button type="submit" class="btn btn-primary" id="submit_action">Proceed</button>
       </div>
     </form>
-    <div class="mt-3 text-center">
-      <p class="mb-1">Registered User?</p>
-      <a href="{{url_for('login')}}" class="btn btn-link p-0">Sign In</a>
+    <div class="mt-3 text-center d-flex flex-row justify-content-center">
+      <p class="mb-1 mx-3 mt-1">Registered User..?</p>
+      <a href="{{url_for('login')}}" class="btn btn-primary p-1">Sign In</a>
     </div>
   </div>
 </div>
-{% endblock %}
-{% block footer %}
-  
 {% endblock %}

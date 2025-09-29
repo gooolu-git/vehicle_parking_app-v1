@@ -36,6 +36,7 @@ class ParkingSpot(db.Model):
     lot_id = db.Column(db.Integer, db.ForeignKey(ParkingLot.id), nullable = False)
     occupied_status = db.Column(db.Boolean , nullable = False , default = False)
     spot_number = db.Column(db.String(6), nullable = False)
+    is_active = db.Column(db.Boolean,default=True,nullable = False)
     # each parking spot can be booked many times
     booked_spots = db.relationship("Bookedspot", backref="parking_spot", lazy=True)
 

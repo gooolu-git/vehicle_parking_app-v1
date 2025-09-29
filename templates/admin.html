@@ -43,18 +43,21 @@ Admin | Parkmatrix
             <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                 data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
                 <h2>+ Add Parking Lot</h2>
-                
+
             </button>
         </p>
         <div style="min-height: 120px;">
             <div class="collapse collapse-horizontal" id="collapseWidthExample">
                 <div class="card card-body" style="width: 800px;">
                     <form class="row g-3" action="create_lot" method="post">
-                        <button class="btn btn-primary text-center" type="button"><h2>+Add Parking Lot</h2></button>
+                        <button class="btn btn-primary text-center" type="button">
+                            <h2>+Add Parking Lot</h2>
+                        </button>
 
                         <div class="col-md-6">
                             <label for="inputEmail4" class="form-label">Location Name</label>
-                            <input type="text" class="form-control shadow" id="inputEmail4" name="location_name" required>
+                            <input type="text" class="form-control shadow" id="inputEmail4" name="location_name"
+                                required>
                         </div>
                         <div class="col-md-6">
                             <label for="inputPassword4" class="form-label">Pin Code</label>
@@ -73,7 +76,9 @@ Admin | Parkmatrix
                             <input type="number" class="form-control shadow" id="inputPassword4" name="spots">
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary"><h3>Add Parking Lot</h3></button>
+                            <button type="submit" class="btn btn-primary">
+                                <h3>Add Parking Lot</h3>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -83,19 +88,33 @@ Admin | Parkmatrix
 </div>
 <div class="container-lg">
     <h1 class="text-center dispaly-1">Manage Lots</h1>
-    <table class="table table-danger">
-          <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Location Name</th>
-      <th scope="col">Adress</th>
-      <th scope="col">Pin Code</th>
-      <th scope="col">Total Spots</th>
-      <th scope="col">Availabe Spots</th>
-      <th scope="col">Occupied</th>
-      <th scope="col">Actions</th>
-    </tr>
-  </thead>
+    <table class="table table-success">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Location Name</th>
+                <th scope="col">Adress</th>
+                <th scope="col">Availabe Spots</th>
+                <th scope="col">Occupied</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody> 
+            {% for lot in lots %}
+            <tr>
+                <td>{{lot.id}}</td>                
+                <td>{{lot.lot_name}}</td>                
+                <td>{{lot.city}}</td>                
+                <td>{{lot.available_parking_spots}}</td> 
+                <td>{{lot.occupied_spots_count}}</td>               
+                 <td>
+                    <a href="{{ url_for('see_lots' , id = lot.id) }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                    <a href="{{ url_for('edit_lots' , id = lot.id) }}" class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                    <a href="{{ url_for('delete_lots' , id = lot.id) }}"class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                 </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 
 </div>

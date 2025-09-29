@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% block title %}
+Spot View | ParkMatrix
+{% endblock %}
+{% block content %}
+<h1 class=" container-lg mb-5"><i class="fa-solid fa-hand-pointer"></i></i> Pick any Parking Spot</h1>
+<div class="container-lg mb-5">
+    <div class="container d-flex flex-wrap justify-content-start align-items-center">
+        {% for spot in spots %}
+        <a href="{{ url_for('book_this_spot',id = spot.id ) }}"><button type="button"
+                class="btn btn-sm btn-primary me-2 my-1">
+                {% if spot.is_active %}
+                <p class="fs-5 text-center text-warning"><i class="fa-solid fa-key"></i> {{spot.spot_number}}</p>
+                <hr>
+                <p class="fs-2">A</p>
+                {% else %}
+                <p class="fs-5 text-center">
+                    O
+                </p>
+                {% endif %}
+            </button></a>
+        {% endfor %}
+
+    </div>
+    <a href="{{ url_for('return_to_dashboard' ) }}"><button type="button" class="btn btn-secondary"><i class="fa-solid fa-backward"></i>Return to DashBoard</button></a>
+</div>
+
+
+
+{% endblock %}

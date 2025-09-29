@@ -11,14 +11,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     {% block style %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script>
     {% endblock %}
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body style="margin: 0; padding: 0;">
-    {% include 'navbar.html' %}
+    {% include 'navbar.html' with context %}
     {% with messeges = get_flashed_messages() %}
     {% if messeges %}
     {% for messege in messeges %}
@@ -33,10 +31,21 @@
     {% block content %}
 
     {% endblock %}
-    
+
     {% block footer %}
-    <footer class="footerr">
-        <p>&copy; 2025 ParkMatrix. All rights reserved.</p>
+    <footer class="footer mt-auto py-3 bg-dark text-white fixed-bottom">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-between align-items-center ">
+                <p class="col-md-4 mb-0 text-white-50">
+                    &copy; 2025 ParkMatrix
+                </p>
+
+                <a href="/"
+                    class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-light text-decoration-none">
+                    <span class="fs-4">ParkMatrix</span>
+                </a>
+            </div>
+        </div>
     </footer>
     {% endblock %}
 </body>
@@ -44,7 +53,6 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/your-unique-kit-code.js" crossorigin="anonymous"></script>
-<script src="{{ url_for('static', filename='main.js') }}"></script>
 {% endblock %}
 
 </html>

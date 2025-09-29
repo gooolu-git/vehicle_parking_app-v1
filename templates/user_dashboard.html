@@ -1,10 +1,36 @@
 {% extends 'layout.html' %}
 {% block title %}
-    User DashBoard | ParkMatrix
+User DashBoard | ParkMatrix
 {% endblock %}
 {% block content %}
-    this is user DashBoard
-{% endblock %}
-{% block footer %}
-    
+
+
+<div class="container text-center mt-4 ">
+    <div class="fs-3 text-start m-3 bg bg-primary p-2 rounded mb-5"><span><i class="fa fa-search"> </i>Choose a parking Lot Here </span>
+</div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+        {% for lot in lots %}
+            <div class="col">
+            <div class="card h-100">
+                <div class="card-body shadow-lg ">
+                    <div class="card-title d-flex flex-column mb-3">
+                        <h5 class="fs-2">{{lot.lot_name}}</h5>
+                        <h5 class="fs-4">Pin-{{lot.pin_code}}</h5>
+                        <hr class="border-3">
+                    </div>
+                    <h6 class="card-subtitle mb-2 text-muted">{{lot.city}}</h6>
+                    <div class="d-flex justify-content-between mb-3">
+                        <a href="#"><button type="button" class="btn btn-danger"><i class="fas fa-inr"></i> {{lot.price}}</button></a>
+                        <a href="#"><button type="button" class="btn btn-info"><i class="fas fa-car"></i> {{lot.available_parking_spots}}</button></a>
+                    </div>
+
+                    <a href="{{ url_for('book_spot', id = lot.id ) }}" class="btn btn-primary w-100"><span class="fas fa-book"> Book Now</span></a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
 {% endblock %}

@@ -75,6 +75,9 @@ def login_page():
         return redirect(url_for('admin'))
     return redirect(url_for('user_dashboard'))
 
+
+
+
 # creating a auth_required decorator for handling the login
 def auth_required(func):
     @wraps(func)
@@ -105,8 +108,24 @@ def admin_required(func):
 @auth_required
 def user_dashboard():
     # The 'user' variable is now automatically available
-    # because of the context processor, so you don't need to pass it here.
-    return render_template('user_dashboard.html')
+    all_lots = ParkingLot.query.all()
+    lots = []
+    for lot in all_lots:
+        lot_id = lot.id
+        unoccupied_spots_count = ParkingSpot.query.filter_by(occupied_status=False,lot_id = lot.id).count()
+        occupied_spots_count = ParkingSpot.query.filter_by(occupied_status=True, lot_id = lot.id).count()
+        lots.append({
+            'id':lot.id,
+            'lot_name':lot.lot_name,
+            'city':lot.city,
+            'pin_code':lot.pin_code,
+            'available_parking_spots':unoccupied_spots_count,
+            'occupied_spots_count':occupied_spots_count,
+            'price':lot.price,
+            'lot_object' : lot
+        })
+    return render_template('user_dashboard.html',lots=lots)
+
 
 @app.route('/profile')
 @auth_required
@@ -158,8 +177,31 @@ def logout():
 @admin_required
 def admin():
     USER = User.query.get(session['user_id'])
-    return render_template('admin.html',USER=USER)
+    all_lots = ParkingLot.query.all()
+    lots = []
+    for lot in all_lots:
+        lot_id = lot.id
+        unoccupied_spots_count = ParkingSpot.query.filter_by(occupied_status=False,lot_id = lot.id).count()
+        occupied_spots_count = ParkingSpot.query.filter_by(occupied_status=True, lot_id = lot.id).count()
+        lots.append({
+            'id':lot.id,
+            'lot_name':lot.lot_name,
+            'city':lot.city,
+            'pin_code':lot.pin_code,
+            'available_parking_spots':unoccupied_spots_count,
+            'occupied_spots_count':occupied_spots_count,
+            'lot_object' : lot
+        })
+    return render_template('admin.html',USER=USER,lots=lots) 
 
+
+
+
+#returnning back to user dashboard
+@app.route('/return_to_dashboard')
+@auth_required
+def return_to_dashboard():
+    return redirect(url_for('user_dashboard'))
 
 
 @app.route('/create_lot' ,methods = ["POST"])
@@ -184,4 +226,48 @@ def create_lot():
     return redirect(url_for('admin'))
 
 
+@app.route('/see_spots/<int:id>')
+@admin_required
+def see_lots(id):
+    all_lots = ParkingLot.query.get(id=id)
+
+
+@app.route('/see_spots/<int:id>')
+@admin_required
+def edit_lots(id):
+    return "edit_sptos"
+    
+
+@app.route('/delete_spots/<int:id>')
+@admin_required
+def delete_lots(id):
+    return "delete spots"
+
+
+
+
+# user_dashboard fuctionality 
+
+@app.route('/book_spot/<int:id>')
+@auth_required
+def book_spot(id):
+    spots = ParkingSpot.query.filter_by(lot_id=id).all()
+    if not spots:
+        flash("invalid lot")
+        return redirect(url_for('user_dashboard'))
+    return render_template('lots_list.html',spots=spots)    
+
+# booking a spot 
+
+@app.route('/book_this_spot/<int:id>')
+@auth_required
+def book_this_spot(id):
+    spot = ParkingSpot.query.get(id)
+    if not spot:
+        flash("spot not available")
+    parking_lot_id = spot.lot_id
+    lot = ParkingLot.query.get(parking_lot_id)
+    available = ParkingSpot.query.filter_by(occupied_status=False, lot_id = parking_lot_id).count()
+
+    return render_template('book_this_spot.html',spot=spot,lot=lot,available=available)
 
