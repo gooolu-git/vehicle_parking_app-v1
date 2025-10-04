@@ -6,38 +6,65 @@ Admin | Parkmatrix
 
 {% endblock %}
 {% block content %}
-<h1 class="dispaly-1 text-center m-4">Admin Dashboard</h1>
-<div class="continer-fluid">
-    <div class="container text-center">
-        <div class="row">
-            <div class="col-3 border border-1 rounded ">
-                <div class="block">
-                    <h3>Heading</h3>
-                    <p>ONE</p>
+
+<div class="container-fluid py-5">
+    <h1 class="display-3 text-center mb-5 fw-bold text-dark">
+        Admin Dashboard
+    </h1>
+
+    <div class="container">
+        <!-- Dashboard Cards - using row and responsive columns -->
+        <!-- g-4 adds consistent gutter (spacing) between columns -->
+        <div class="row g-4">
+            
+            <!-- Card 1: Total Users -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card shadow-lg border-0 bg-primary-subtle text-dark">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-users fa-3x mb-3 text-primary"></i>
+                        <h3 class="card-title fw-semibold text-primary">Total Users</h3>
+                        <p class="fs-2 fw-bold mb-0">9,450</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-3 border border-1 rounded">
-                <div class="block">
-                    <h3>Heading</h3>
-                    <p>ONE</p>
+
+            <!-- Card 2: New Orders -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card shadow-lg border-0 bg-success-subtle text-dark">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-shopping-cart fa-3x mb-3 text-success"></i>
+                        <h3 class="card-title fw-semibold text-success">New Orders</h3>
+                        <p class="fs-2 fw-bold mb-0">1,208</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-3 border border-1 rounded">
-                <div class="block" style="height:200px; background-color:rgb(38, 38, 230);">
-                    <h3>Heading</h3>
-                    <p>ONE</p>
+
+            <!-- Card 3: Revenue (with custom background effect) -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card shadow-lg border-0 bg-info-subtle text-dark">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-chart-line fa-3x mb-3 text-info"></i>
+                        <h3 class="card-title fw-semibold text-info">Revenue</h3>
+                        <p class="fs-2 fw-bold mb-0">$87,450</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-3 border border-1 rounded">
-                <div class="block">
-                    <h3>Heading</h3>
-                    <p>ONE</p>
+
+            <!-- Card 4: Pending Tasks -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card shadow-lg border-0 bg-warning-subtle text-dark">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3 text-warning"></i>
+                        <h3 class="card-title fw-semibold text-warning">Pending Tasks</h3>
+                        <p class="fs-2 fw-bold mb-0">14</p>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
-<div class="continer-fluid m-3 p-3">
+<div class="continer-fluid m-2 p-3">
     <div class="container">
         <p>
             <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
@@ -46,7 +73,7 @@ Admin | Parkmatrix
 
             </button>
         </p>
-        <div style="min-height: 120px;">
+        <div>
             <div class="collapse collapse-horizontal" id="collapseWidthExample">
                 <div class="card card-body" style="width: 800px;">
                     <form class="row g-3" action="create_lot" method="post">

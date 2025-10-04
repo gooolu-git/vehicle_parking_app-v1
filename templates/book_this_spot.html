@@ -1,22 +1,17 @@
 {% extends 'layout.html' %}
 {% block title %}
-Book Your Spot | ParkMatrix
+booked_spot_details Your Spot | ParkMatrix
 {% endblock %}
 {% block content %}
+
 <div class="container text-center mt-4 ">
-    <div class="fs-3 text-center m-3 bg bg-primary p-2 rounded mb-5"><span><i class="fa fa-book"> </i> Book Parking
+    <div class="fs-3 text-center m-3 bg bg-primary p-2 rounded mb-5"><span><i class="fa fa-booked_spot_details"> </i> booked_spot_details Parking
             Spot</span>
     </div>
     <div class="container my-4 p-3 shadow-lg ">
         <div class="d-flex flex-row d-grid gap-4">
             <div class="p-3 w-50 d-flex justify-content-start flex-column">
                 <h1 class="text-start fs-1 bg bg-warning rounded shadow-lg mb-3 p-1"> {{lot.lot_name}}</h1>
-                <!-- <p class="text-center">Address   {{lot.city}}</p>
-                <p class="text-center">Zip Code - {{lot.pin_code}}</p>
-                <p class="text-center">Vacant Spots - <i class="fa fa-car"></i> {{available}}</p>
-                <p class="text-center">Price -  {{lot.price}}</p>
-                <p class="text-center">Address - {{lot.city}}</p> -->
-
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="fa fa-location-arrow"></i></span>
                     <span class="input-group-text">Address : {{lot.city}}</span>
@@ -36,19 +31,18 @@ Book Your Spot | ParkMatrix
             </div>
             <div class="p-3 w-50">
                 <h3 class="mb-3 text-start fs-1 bg bg-info shadow-lg rounded p-1">Enter Details...</h3>
-                <form>
+                <form action="/book_this_spot/{{spot.id}}" method="post">
                     <div class="mb-3 form-floating " style="width: 70%; ">
-                        <input type="text" name="username" id="user_email" class="form-control"
+                        <input type="text" name="vehicle_number" id="user_email" class="form-control"
                             placeholder="Vehicle Number" required>
                         <label for="user_email">Vehicle Number </label>
                     </div>
 
                     <div class="d-flex justify-content-start flex-column align-items-start ">
-                        <button type="submit" class="btn btn-primary  mt-2 mb-2 " style="width: 70%;"><i class="fa fa-book"></i><span class="fs-4"> Book Parking Spot</span>
-
+                        <button type="submit" class="btn btn-primary  mt-2 mb-2 " style="width: 70%;"><i class="fa fa-booked_spot_details"></i><span class="fs-4"> book Parking Spot</span>
                         </button>
                         <button type="button" class="btn btn-secondary " style="width: 70%; "><i class="fa fa-backward"></i><span class="fs-4"> Return To DashBoard</span>
-
+        
                         </button>
                     </div>
                 </form>

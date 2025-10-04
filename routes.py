@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, url_for, redirect, session
 from app import app
-from models import db, User, ParkingLot, ParkingSpot
+from models import db, User, ParkingLot, ParkingSpot ,Bookedspot
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 
@@ -124,8 +124,19 @@ def user_dashboard():
             'price':lot.price,
             'lot_object' : lot
         })
-    return render_template('user_dashboard.html',lots=lots)
+    user_id = session['user_id']
+    booked_spot_details = Bookedspot.query.filter_by(user_id=user_id).first()
+    if not booked_spot_details:
+        messege = "No Active Bookings Available"
+        return render_template('user_dashboard.html',lots=lots ,messege = messege)
+    
+    booked_spot_id = booked_spot_details.spot_id
+    booked_spot = ParkingSpot.query.filter_by(id = booked_spot_id).first()
+    booked_lot_id = booked_spot.lot_id
+    booked_lot = ParkingLot.query.filter_by(id = booked_lot_id).first()
+    user_booked = User.query.filter_by(id = user_id).first()
 
+    return render_template('user_dashboard.html',lots=lots ,booked_spot_details=booked_spot_details,user_booked=user_booked , booked_lot=booked_lot,booked_spot=booked_spot)
 
 @app.route('/profile')
 @auth_required
@@ -248,10 +259,10 @@ def delete_lots(id):
 
 # user_dashboard fuctionality 
 
-@app.route('/book_spot/<int:id>')
+@app.route('/book_spot/<int:lot_id>')
 @auth_required
-def book_spot(id):
-    spots = ParkingSpot.query.filter_by(lot_id=id).all()
+def book_spot(lot_id):
+    spots = ParkingSpot.query.filter_by(lot_id=lot_id).all()
     if not spots:
         flash("invalid lot")
         return redirect(url_for('user_dashboard'))
@@ -259,15 +270,41 @@ def book_spot(id):
 
 # booking a spot 
 
-@app.route('/book_this_spot/<int:id>')
+@app.route('/book_this_spot/<int:spot_id>')
 @auth_required
-def book_this_spot(id):
-    spot = ParkingSpot.query.get(id)
+def book_this_spot(spot_id):
+    spot = ParkingSpot.query.get(spot_id)
+    lot_id = spot.lot_id
+    if spot is None:
+        flash("spot not available")
+    is_occupied = spot.occupied_status
+    if is_occupied :
+        flash("spot is occupied")
+        return redirect(url_for('book_spot',lot_id=lot_id))
+    parking_lot_id = spot.lot_id
+    lot = ParkingLot.query.get(parking_lot_id)
+    available = ParkingSpot.query.filter_by(occupied_status=False, lot_id = parking_lot_id).count()
+    return render_template('book_this_spot.html',spot=spot,lot=lot,available=available)
+
+        # available = ParkingSpot.query.filter_by(occupied_status=False, lot_id = parking_lot_id).count()
+
+
+@app.route('/book_this_spot/<int:spot_id>',methods=["POST"])
+@auth_required
+def booked_spot(spot_id):
+    spot = ParkingSpot.query.filter_by(id=spot_id).scalar()
     if not spot:
         flash("spot not available")
     parking_lot_id = spot.lot_id
     lot = ParkingLot.query.get(parking_lot_id)
-    available = ParkingSpot.query.filter_by(occupied_status=False, lot_id = parking_lot_id).count()
+    vehicle_number = request.form.get("vehicle_number")
+    user_id = session['user_id']
+    spot.occupied_status = True
+    db.session.flush()
+    booked = Bookedspot(user_id = user_id ,spot_id=spot_id,vehicle_number=vehicle_number)
 
-    return render_template('book_this_spot.html',spot=spot,lot=lot,available=available)
+    db.session.add(booked)
+    db.session.commit()
+    flash("Booking successfull !")
+    return redirect(url_for('user_dashboard'))
 

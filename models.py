@@ -48,7 +48,7 @@ class Bookedspot(db.Model):
     spot_id = db.Column(db.Integer , db.ForeignKey(ParkingSpot.id) , nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable = False)
 
-    entry_timing = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    entry_timing = db.Column(db.DateTime, nullable=False, default=datetime.now)
     exit_timing = db.Column(db.DateTime, nullable=True)
 
     parking_cost = db.Column(db.Float, nullable=True)

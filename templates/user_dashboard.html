@@ -1,36 +1,126 @@
-{% extends 'layout.html' %}
-{% block title %}
-User DashBoard | ParkMatrix
-{% endblock %}
-{% block content %}
+{% extends 'layout.html' %} {% block title %} User DashBoard | ParkMatrix {%
+endblock %} {% block content %}
 
+<div class="container my-5">
+    <h2 class="text-start fs-1 text-primary mb-4 pb-2 border-bottom">
+        Active Bookings
+    </h2>
+    {% if not booked_spot_details %}
+    <div class="row">
+        <div class="col-12 col-md-6 mb-3">
+            <span class="text-danger text-center"><i class="fa fa-star"></i> {{ messege}}</span>
+        </div>
+    </div>
+    {% else %}
+    <div class="p-3 bg-light rounded shadow-sm border">
+        <h3 class="text-start fs-3 bg-warning rounded shadow-lg mb-3 p-2">
+            Booked Slot Id : {{booked_spot.id}}
+        </h3>
 
-<div class="container text-center mt-4 ">
-    <div class="fs-3 text-start m-3 bg bg-primary p-2 rounded mb-5"><span><i class="fa fa-search"> </i>Choose a parking Lot Here </span>
+        <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text text-danger"><i class="fa fa-circle-user"></i></span>
+                    <span class="input-group-text w-75">
+                        Registered Owner : {{user_booked.name}}
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text text-danger"><i class="fa fa-calendar-alt"></i></span>
+                    <span class="input-group-text w-75">
+                        Booking Date: {{booked_spot_details.entry_timing.strftime('%d %b
+                        %Y @%I:%M %p')}}
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text text-danger"><i class="fa fa-bus"></i></span>
+                    <span class="input-group-text w-75">
+                        Lot Id : {{booked_lot.id}}
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text text-danger"><i class="fa fa-location-dot"></i></span>
+                    <span class="input-group-text w-75">
+                        Location:{{booked_lot.lot_name}}
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text text-danger"><i class="fa fa-address-card"></i></span>
+                    <span class="input-group-text w-75">
+                        Address: {{booked_lot.city}}
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text text-danger"><i class="fa fa-car"></i></span>
+                    <span class="input-group-text w-75">
+                        Vehicle No. : {{booked_spot_details.vehicle_number}}
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text text-danger"><i class="fa fa-inr"></i></span>
+                    <span class="input-group-text w-75">
+                        Price/Day : {{booked_lot.price}}
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-6 mb-3 m-auto">
+                <button class="btn btn-info w-50">
+                    <i class="fa fa-flag p-2"></i> Release Spot
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+</div>
+{% endif %}
+<div class="container text-center mt-4">
+    <div class="fs-3 text-start m-3 bg bg-primary p-2 rounded mb-5">
+        <span><i class="fa fa-search"> </i>Choose a parking Lot Here </span>
+    </div>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
         {% for lot in lots %}
-            <div class="col">
+        <div class="col">
             <div class="card h-100">
-                <div class="card-body shadow-lg ">
+                <div class="card-body shadow-lg">
                     <div class="card-title d-flex flex-column mb-3">
                         <h5 class="fs-2">{{lot.lot_name}}</h5>
                         <h5 class="fs-4">Pin-{{lot.pin_code}}</h5>
-                        <hr class="border-3">
+                        <hr class="border-3" />
                     </div>
                     <h6 class="card-subtitle mb-2 text-muted">{{lot.city}}</h6>
                     <div class="d-flex justify-content-between mb-3">
-                        <a href="#"><button type="button" class="btn btn-danger"><i class="fas fa-inr"></i> {{lot.price}}</button></a>
-                        <a href="#"><button type="button" class="btn btn-info"><i class="fas fa-car"></i> {{lot.available_parking_spots}}</button></a>
+                        <a href="#"><button type="button" class="btn btn-danger">
+                                <i class="fas fa-inr"></i> {{lot.price}}
+                            </button></a>
+                        <a href="#"><button type="button" class="btn btn-info">
+                                <i class="fas fa-car"></i> {{lot.available_parking_spots}}
+                            </button></a>
                     </div>
 
-                    <a href="{{ url_for('book_spot', id = lot.id ) }}" class="btn btn-primary w-100"><span class="fas fa-book"> Book Now</span></a>
+                    <a href="{{ url_for('book_spot', lot_id = lot.id ) }}" class="btn btn-primary w-100"><span
+                            class="fas fa-booked_spot_details"> book Now</span></a>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
-
 </div>
 
 {% endblock %}
