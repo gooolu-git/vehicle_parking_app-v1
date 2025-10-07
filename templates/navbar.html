@@ -1,27 +1,77 @@
-<nav class="navbar navbar-expand-lg m-3 rounded" style="position:sticky; top:0;z-index: 10;background-color: rgba(182, 238, 160, 0.5);">
+<nav class="navbar navbar-expand-lg m-3 rounded navbar-dark"
+    style="position:sticky; top:0;z-index: 10;background-color: #712cf9;">
     <div class="container-fluid">
-        <a class="navbar-brand text-danger fs-1 bolder" href="{{ url_for('index' ) }}">ParkMatrix</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        <a class="navbar-brand text-white fs-3 bolder" href="{{ url_for('index' ) }}">ParkMatrix</a>
+        <!-- The navbar-dark class automatically makes the toggler icon white -->
+        <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            {% if 'user_id' in session %}
-                        <ul class="navbar-nav ms-auto">
+
+            <!-- Applied ms-auto here to push the navigation links to the far right -->
+            <ul class="navbar-nav text-white ms-auto mt-2">
+                {% if 'user_id' in session %}
+                {% if user.is_admin %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('profile') }}"><button type="button" class="btn btn-outline-success" style="height:50px; width:50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><img src="https://api.dicebear.com/9.x/pixel-art/svg?seed={{user.name}} " alt=""></button></a>
+                    <a class="nav-link text-white" href="{{ url_for('admin') }}"
+                        style="font-size: larger; font-weight:bold; opacity: 0.8;">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('logout') }}"><button type="button" class="btn btn-warning m-0">Logout</button></a>
+                    <a class="nav-link text-white" href="{{ url_for('user_list' ) }}"
+                        style="font-size: larger; font-weight:bold; opacity: 0.8;">Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('lot_list' ) }}"
+                        style="font-size: larger; font-weight:bold; opacity: 0.8;">Lots</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#"
+                        style="font-size: larger; font-weight:bold; opacity: 0.8;">Summary</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('user_dashboard') }}"
+                        style="font-size: larger; font-weight:bold; opacity: 0.8;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('spot_list' ) }}"
+                        style="font-size: larger; font-weight:bold; opacity: 0.8;">SpotBooking</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-info" href="{{ url_for('booking_history' ) }}"
+                        style="font-size: larger; font-weight:bold; opacity: 0.8;">History</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-info" href="#"
+                        style="font-size: larger; font-weight:bold; opacity: 0.8;">Summary</a>
+                </li>
+                {% endif %}
+                {% endif %}
+            </ul>
+
+            {% if 'user_id' in session %}
+            <!-- This user block automatically follows the main links to the right -->
+            <ul class="navbar-nav mt-2">
+                <li class="nav-item">
+                    <a class="nav-link mt-2" href="{{ url_for('profile') }}"><button type="button"
+                            class="btn btn-outline-danger text-white m-0">Profile</button></a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link" href="{{ url_for('logout') }}"><button type="button"
+                            class="btn btn-warning m-0">Logout</button></a>
                 </li>
             </ul>
             {% else %}
-            <ul class="navbar-nav ms-auto">
+            <!-- Removed ms-auto here as the navigation links UL already handles pushing everything right -->
+            <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('login')}}"><button type="button" class="btn btn-outline-danger">Log In</button></a>
+                    <a class="nav-link" href="{{url_for('login')}}"><button type="button"
+                            class="btn btn-danger ">Log In</button></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('register')}}"><button type="button" class="btn btn-warning">Sign Up</button></a>
+                    <a class="nav-link" href="{{url_for('register')}}"><button type="button"
+                            class="btn btn-warning">Sign Up</button></a>
                 </li>
             </ul>
             {% endif %}

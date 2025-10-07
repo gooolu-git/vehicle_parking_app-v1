@@ -1,0 +1,47 @@
+{% extends 'layout.html'   %}
+{% block title %}
+    Parking Lots | ParkMatrix
+{% endblock %}
+{% block content %}
+    <div class="container-fluid my-3">
+    <h1 class="text-center text-primary fw-bold mb-3"><i class="fa-solid fa-hand-pointer me-2"></i>Parking Spots Status</h1>
+    
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            
+            <div class="p-3 bg-light rounded-4 shadow-lg mb-3">
+                <h2 class="text-start fs-4 mb-3 border-bottom pb-2 text-secondary">
+                    <i class="fa-solid fa-square-parking me-2"></i>{{lots.lot_name}} <span class="ms-4">occupied :{{ occupied_spots_count}}</span><span class="ms-4">unoccupied :{{ unoccupied_spots_count}}</span>
+                </h2>
+
+                <div class="row row-cols-3 row-cols-md-4 row-cols-lg-6 g-3 justify-content-start">
+                    {% for spot in spots %}
+                        <div class="col">
+                            {% if not spot.occupied_status %}
+                                    <button type="button" class="btn btn-primary w-100 h-100 shadow-sm border border-3 border-success-subtle rounded-3 d-flex flex-column align-items-center justify-content-between p-2">
+                                        <p class="fs-6 text-white-50 fw-light mb-1"><i class="fa-solid fa-key me-1"></i> {{ spot.spot_number }}</p>
+                                        <div class="w-75 border-bottom border-1 border-white my-1"></div>
+                                        <p class="fs-2 fw-bold mb-0">A</p>
+                                    </button>
+                            {% else %}
+                                    <button type="button" class="btn btn-danger w-100 h-100 shadow-sm border border-3 border-success-subtle rounded-3 d-flex flex-column align-items-center justify-content-between p-2">
+                                        <p class="fs-6 text-white-50 fw-light mb-1"><i class="fa-solid fa-key me-1"></i> {{ spot.spot_number }}</p>
+                                        <div class="w-75 border-bottom border-1 border-white my-1"></div>
+                                        <p class="fs-2 fw-bold mb-0">O</p>
+                                    </button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        
+            <div class="text-start mt-5">
+                <a href="{{ url_for('lot_list') }}" class="btn btn-info shadow-sm">
+                    <i class="fa-solid fa-backward me-2"></i>Return to Lots Management
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

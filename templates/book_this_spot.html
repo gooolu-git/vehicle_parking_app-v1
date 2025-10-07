@@ -3,50 +3,67 @@
 booked_spot_details Your Spot | ParkMatrix
 {% endblock %}
 {% block content %}
+<div class="container mt-4">
 
-<div class="container text-center mt-4 ">
-    <div class="fs-3 text-center m-3 bg bg-primary p-2 rounded mb-5"><span><i class="fa fa-booked_spot_details"> </i> booked_spot_details Parking
-            Spot</span>
+    <div class="fs-3 text-center m-3 bg-primary text-white p-3 rounded shadow-sm">
+        <i class="fas fa-car-side me-2"></i> Enter Car Details for Parking Spot
     </div>
-    <div class="container my-4 p-3 shadow-lg ">
-        <div class="d-flex flex-row d-grid gap-4">
-            <div class="p-3 w-50 d-flex justify-content-start flex-column">
-                <h1 class="text-start fs-1 bg bg-warning rounded shadow-lg mb-3 p-1"> {{lot.lot_name}}</h1>
-                <div class="input-group mb-3">
-                    <span class="input-group-text"><i class="fa fa-location-arrow"></i></span>
-                    <span class="input-group-text">Address : {{lot.city}}</span>
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text"><i class="fas fa-location-dot"></i></span>
-                    <span class="input-group-text">Pin Code : {{lot.pin_code}}</span>
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text"><i class="fa fa-inr"></i></span>
-                    <span class="input-group-text">Price : {{lot.price}}</span>
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text"><i class="fa fa-bus"></i></span>
-                    <span class="input-group-text">Empty Spots : {{available}}</span>
+
+    <div class="container my-4 p-4 shadow-xl border rounded-lg bg-white">
+        
+        <div class="row g-4">
+            
+            <div class="col-12 col-md-6">
+                <h1 class="text-start fs-1 bg-warning rounded shadow-sm mb-3 p-2 text-dark">
+                    {{lot.lot_name}}
+                </h1>
+                
+                <div class="list-group">
+                    <div class="list-group-item d-flex align-items-center">
+                        <span class="input-group-text bg-light text-primary border-0 me-3"><i class="fas fa-location-dot"></i></span>
+                        <strong class="fw-normal">Address:</strong> <span class="ms-2">{{lot.city}}</span>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center">
+                        <span class="input-group-text bg-light text-primary border-0 me-3"><i class="fas fa-thumbtack"></i></span>
+                        <strong class="fw-normal">Pin Code:</strong> <span class="ms-2">{{lot.pin_code}}</span>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center">
+                        <span class="input-group-text bg-light text-primary border-0 me-3"><i class="fas fa-sack-dollar"></i></span>
+                        <strong class="fw-normal">Price:</strong> <span class="ms-2 text-success fw-bold">{{lot.price}} per hour</span>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center">
+                        <span class="input-group-text bg-light text-primary border-0 me-3"><i class="fas fa-square-parking"></i></span>
+                        <strong class="fw-normal">Empty Spots:</strong> <span class="ms-2 fw-bold text-info">{{available}}</span>
+                    </div>
                 </div>
             </div>
-            <div class="p-3 w-50">
-                <h3 class="mb-3 text-start fs-1 bg bg-info shadow-lg rounded p-1">Enter Details...</h3>
+            
+            <div class="col-12 col-md-6">
+                <h3 class="mb-4 text-start fs-1 bg-info shadow-sm rounded p-2 text-white">
+                    Enter Details...
+                </h3>
+                
                 <form action="/book_this_spot/{{spot.id}}" method="post">
-                    <div class="mb-3 form-floating " style="width: 70%; ">
-                        <input type="text" name="vehicle_number" id="user_email" class="form-control"
+                    
+                    <div class="mb-3 form-floating">
+                        <input type="text" name="vehicle_number" id="vehicle_number_input" class="form-control"
                             placeholder="Vehicle Number" required>
-                        <label for="user_email">Vehicle Number </label>
+                        <label for="vehicle_number_input">Vehicle Number </label>
                     </div>
 
-                    <div class="d-flex justify-content-start flex-column align-items-start ">
-                        <button type="submit" class="btn btn-primary  mt-2 mb-2 " style="width: 70%;"><i class="fa fa-booked_spot_details"></i><span class="fs-4"> book Parking Spot</span>
+                    <div class="d-grid gap-3 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg shadow">
+                            <i class="fas fa-check-circle me-2"></i> Book Parking Spot
                         </button>
-                        <button type="button" class="btn btn-secondary " style="width: 70%; "><i class="fa fa-backward"></i><span class="fs-4"> Return To DashBoard</span>
-        
-                        </button>
+                        
+                        <!-- UPDATED: Replaced JavaScript button with a Jinja anchor tag styled as a button -->
+                        <a href="{{ url_for('spot_list') }}" class="btn btn-secondary btn-lg shadow text-white">
+                            <i class="fas fa-arrow-left me-2"></i> Return To Dashboard
+                        </a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    {% endblock %}
+</div>
+{% endblock content %}

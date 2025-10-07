@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% block title %}
+Booking History | ParkMatrix
+{% endblock %}
+{% block content %}
+  <div class="container-lg">
+  <h4 class="text-start dispaly-1 mb-2 mt-5 ">Booking History</h4>
+  <table class="table table-success">
+    <thead>
+      <tr>
+        <th scope="col">Booking Id</th>
+        <th scope="col">Location Name</th>
+        <th scope="col">Address</th>
+        <th scope="col">Vehicle No.</th>
+        <th scope="col">Entry Date & Time</th>
+        <th scope="col">Exit Date & Time </th>
+        <th scope="col">Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for history in occupied_history %}
+      <tr>
+        <td>{{history.bookedspot_id}}</td>
+        <td>{{history.location_name}}</td>
+        <td>{{history.address}}</td>
+        <td>{{history.vehicle}}</td>
+        <td>{{history.entry}}</td>
+        <td>{{history.exit}}</td>
+        <td>{{history.cost}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+{% endblock %}

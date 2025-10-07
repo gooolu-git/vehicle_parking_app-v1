@@ -23,7 +23,7 @@ Admin | Parkmatrix
                     <div class="card-body text-center p-4">
                         <i class="fas fa-users fa-3x mb-3 text-primary"></i>
                         <h3 class="card-title fw-semibold text-primary">Total Users</h3>
-                        <p class="fs-2 fw-bold mb-0">9,450</p>
+                        <p class="fs-2 fw-bold mb-0">{{user_count}}</p>
                     </div>
                 </div>
             </div>
@@ -32,9 +32,9 @@ Admin | Parkmatrix
             <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card shadow-lg border-0 bg-success-subtle text-dark">
                     <div class="card-body text-center p-4">
-                        <i class="fas fa-shopping-cart fa-3x mb-3 text-success"></i>
-                        <h3 class="card-title fw-semibold text-success">New Orders</h3>
-                        <p class="fs-2 fw-bold mb-0">1,208</p>
+                        <i class="fas fa-parking fa-3x mb-3 text-success"></i>
+                        <h3 class="card-title fw-semibold text-success">Active Bookings</h3>
+                    <p class="fs-2 fw-bold mb-0">{{bookings_count}}</p>
                     </div>
                 </div>
             </div>
@@ -43,9 +43,9 @@ Admin | Parkmatrix
             <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card shadow-lg border-0 bg-info-subtle text-dark">
                     <div class="card-body text-center p-4">
-                        <i class="fas fa-chart-line fa-3x mb-3 text-info"></i>
-                        <h3 class="card-title fw-semibold text-info">Revenue</h3>
-                        <p class="fs-2 fw-bold mb-0">$87,450</p>
+                        <i class="fas fa-bus fa-3x mb-3 text-info"></i>
+                        <h3 class="card-title fw-semibold text-info">Avalable Lots</h3>
+                        <p class="fs-2 fw-bold mb-0">{{lot_count}}</p>
                     </div>
                 </div>
             </div>
@@ -54,9 +54,9 @@ Admin | Parkmatrix
             <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card shadow-lg border-0 bg-warning-subtle text-dark">
                     <div class="card-body text-center p-4">
-                        <i class="fas fa-exclamation-triangle fa-3x mb-3 text-warning"></i>
-                        <h3 class="card-title fw-semibold text-warning">Pending Tasks</h3>
-                        <p class="fs-2 fw-bold mb-0">14</p>
+                        <i class="fas fa-inr fa-3x mb-3 text-warning"></i>
+                        <h3 class="card-title fw-semibold text-warning">Revenue</h3>
+                        <p class="fs-2 fw-bold mb-0">{{total_revenue}}</p>
                     </div>
                 </div>
             </div>
@@ -64,87 +64,7 @@ Admin | Parkmatrix
         </div>
     </div>
 </div>
-<div class="continer-fluid m-2 p-3">
-    <div class="container">
-        <p>
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
-                <h2>+ Add Parking Lot</h2>
 
-            </button>
-        </p>
-        <div>
-            <div class="collapse collapse-horizontal" id="collapseWidthExample">
-                <div class="card card-body" style="width: 800px;">
-                    <form class="row g-3" action="create_lot" method="post">
-                        <button class="btn btn-primary text-center" type="button">
-                            <h2>+Add Parking Lot</h2>
-                        </button>
-
-                        <div class="col-md-6">
-                            <label for="inputEmail4" class="form-label">Location Name</label>
-                            <input type="text" class="form-control shadow" id="inputEmail4" name="location_name"
-                                required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputPassword4" class="form-label">Pin Code</label>
-                            <input type="text" class="form-control shadow" id="inputPassword4" name="pin_code" required>
-                        </div>
-                        <div class="col-12">
-                            <label for="inputAddress" class="form-label">Address</label>
-                            <input type="text" class="form-control shadow" id="inputAddress" name="adress" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputEmail4" class="form-label">Price Per Hour</label>
-                            <input type="number" class="form-control shadow" id="inputEmail4" name="price">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputPassword4" class="form-label">Total Parking Spot</label>
-                            <input type="number" class="form-control shadow" id="inputPassword4" name="spots">
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">
-                                <h3>Add Parking Lot</h3>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="container-lg">
-    <h1 class="text-center dispaly-1">Manage Lots</h1>
-    <table class="table table-success">
-        <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Location Name</th>
-                <th scope="col">Adress</th>
-                <th scope="col">Availabe Spots</th>
-                <th scope="col">Occupied</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody> 
-            {% for lot in lots %}
-            <tr>
-                <td>{{lot.id}}</td>                
-                <td>{{lot.lot_name}}</td>                
-                <td>{{lot.city}}</td>                
-                <td>{{lot.available_parking_spots}}</td> 
-                <td>{{lot.occupied_spots_count}}</td>               
-                 <td>
-                    <a href="{{ url_for('see_lots' , id = lot.id) }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
-                    <a href="{{ url_for('edit_lots' , id = lot.id) }}" class="btn btn-warning"><i class="fa fa-edit"></i></a>
-                    <a href="{{ url_for('delete_lots' , id = lot.id) }}"class="btn btn-danger"><i class="fa fa-trash"></i></a>
-                 </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-</div>
 {% endblock %}
 {% block footer %}
 

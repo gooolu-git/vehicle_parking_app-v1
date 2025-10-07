@@ -1,0 +1,86 @@
+{% extends 'layout.html' %}
+{% block title %}
+Lots | ParkMatrix
+{% endblock %}
+{% block content %}
+<div class="container-lg py-5">
+  <h3 class="display-4 text-center mb-2  text-danger">
+    Users Management
+  </h3>
+  <hr class="border-2">
+
+  <div class="container py-5 mx-auto">
+
+    <div class="row g-4 justify-content-center">
+
+
+      <div class="col-12 col-sm-6 col-md-5 col-lg-3">
+        <div class="card shadow-lg border-0 bg-primary-subtle text-dark h-100 rounded-xl">
+          <div class="card-body text-center p-3">
+            <i class="fas fa-users fa-2x mb-2 text-primary"></i>
+            <h4 class="card-title fw-semibold text-primary mb-1">Total Users</h4>
+            <p class="fs-3 fw-bold mb-0">{{user_count}}</p>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-12 col-sm-6 col-md-5 col-lg-3">
+        <div class="card shadow-lg border-0 bg-success-subtle text-dark h-100 rounded-xl">
+          <div class="card-body text-center p-3">
+            <i class="fas fa-car fa-2x mb-2 text-success"></i>
+            <h4 class="card-title fw-semibold text-success mb-1">Occupied Users</h4>
+            <p class="fs-3 fw-bold mb-0">{{bookings_count}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-lg">
+    <h4 class="text-start dispaly-1 mb-3 mt-5 ">Registered Users Data</h4>
+    <hr class="border-2">
+    <table class="table table-success ">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">UserID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Occupied Spot Id</th>
+          <th scope="col">Status</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for users in usermodel %}
+        <tr>
+          <td>{{users.id}}</td>
+          <td>{{users.username}}</td>
+          <td>{{users.name}}</td>
+          <td>{% if users.spot_id != 0 %}
+            {{users.spot_id}}
+            {% else %}
+
+            {% endif %}
+          </td>
+          <td> {% if users.is_active %}
+            Active
+            {% else %}
+            Inactive
+            {% endif %}
+           </td>
+          <td> 
+            {% if users.is_active %}
+            <a href="{{ url_for('deactivate_user' , uid = users.id) }}" class="btn btn-danger">Freeze</a>
+            {% else %}
+            <a href="{{ url_for('deactivate_user' , uid = users.id) }}" class="btn btn-warning">Activate</a>
+            {% endif %}
+          </td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+  {% endblock %}

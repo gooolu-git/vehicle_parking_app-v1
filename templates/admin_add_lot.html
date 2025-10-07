@@ -1,0 +1,103 @@
+{% extends 'layout.html' %}
+{% block title %}
+Lots | ParkMatrix
+{% endblock %}
+{% block content %}
+<div class="container-fluid m p-3">
+  <h2 class="text-dark text-center mx-auto fs-3 fs-md-1 mb-5 p-2" style="width: fit-content;">Parking Lot Management And Creation</h2>
+  
+  <div class="container">
+    <hr class="border-2 mb-5">
+    
+    <div class="mb-4">
+      <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample"
+        aria-expanded="false" aria-controls="collapseWidthExample">
+        <span class="d-flex align-items-center justify-content-center fs-5 fs-md-3"> 
+            <i class="fa fa-plus text-warning me-2"></i> Click Here To Add Parking Lot
+        </span>
+      </button>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center">
+      <div class="collapse collapse-horizontal w-100" id="collapseWidthExample">
+        <div class="card card-body p-3 p-md-5">
+          <form class="row g-3" action="create_lot" method="post">
+            
+            <button class="btn btn-primary text-center w-100 mb-4" type="button">
+              <h4 class="m-0">+Add Parking Lot</h4>
+            </button>
+
+            <div class="col-12 col-md-6">
+              <label for="locationName" class="form-label">Location Name</label>
+              <input type="text" class="form-control shadow" id="locationName" name="location_name" required>
+            </div>
+            
+            <div class="col-12 col-md-6">
+              <label for="pinCode" class="form-label">Pin Code</label>
+              <input type="text" class="form-control shadow" id="pinCode" name="pin_code" required>
+            </div>
+            
+            <div class="col-12">
+              <label for="inputAddress" class="form-label">Address</label>
+              <input type="text" class="form-control shadow" id="inputAddress" name="adress" required>
+            </div>
+            
+            <div class="col-12 col-md-6">
+              <label for="pricePerHour" class="form-label">Price Per Hour</label>
+              <input type="number" class="form-control shadow" id="pricePerHour" name="price" required>
+            </div>
+            
+            <div class="col-12 col-md-6">
+              <label for="totalSpots" class="form-label">Total Parking Spot</label>
+              <input type="number" class="form-control shadow" id="totalSpots" name="spots" required>
+            </div>
+            
+            <div class="col-12 d-flex align-items-center justify-content-center mt-4">
+              <button type="submit" class="btn btn-primary fs-4 w-100 w-md-50">
+                Create Parking Lot
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-lg">
+  <h4 class="text-start dispaly-1 mb-2 mt-5">Lots Management</h4>
+  
+  <div class="table-responsive"> 
+    <table class="table table-success table-striped">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Location Name</th>
+          <th scope="col">Adress</th>
+          <th scope="col">Availabe Spots</th>
+          <th scope="col">Occupied</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for lot in lots %}
+        <tr>
+          <td>{{lot.id}}</td>
+          <td>{{lot.lot_name}}</td>
+          <td>{{lot.city}}</td>
+          <td>{{lot.available_parking_spots}}</td>
+          <td>{{lot.occupied_spots_count}}</td>
+          <td>
+            <div class="d-flex flex-nowrap">
+              <a href="{{ url_for('see_lots' , sid = lot.id) }}" class="btn btn-sm btn-primary me-1" title="View"><i class="fa fa-eye"></i></a>
+              <a href="{{ url_for('edit_lots' , sid = lot.id) }}" class="btn btn-sm btn-warning me-1" title="Edit"><i class="fa fa-edit"></i></a>
+              <a href="{{ url_for('delete_lots' , sid = lot.id) }}" class="btn btn-sm btn-danger" type="submit" title="Delete"><i class="fa fa-trash"></i></a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

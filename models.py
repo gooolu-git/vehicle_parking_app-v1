@@ -10,7 +10,7 @@ class User(db.Model):
     passhash = db.Column(db.String(256), nullable = False)
     name = db.Column(db.String(64), nullable=False)
     is_admin = db.Column(db.Boolean, nullable = False , default = False)
-    # is_active_user = db.Column(db.Boolean, nullable = False , default = False)
+    is_active_user = db.Column(db.Boolean, nullable = False , default = True)
 
     # spots where the users have acquired or booked the spot 
     acquired_spot = db.relationship("Bookedspot", backref="user", lazy=True)
