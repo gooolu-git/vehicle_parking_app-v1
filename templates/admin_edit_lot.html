@@ -1,71 +1,74 @@
-{% extends 'layout.html'   %}
+{% extends 'layout.html' %}
 {% block title %}
-    Parking Lots | ParkMatrix
+Parking Lots | ParkMatrix
 {% endblock %}
 {% block content %}
-  <div class="d-flex justify-content-center align-items-center py-5 bg-light min-vh-100">
-  <div class="collapse show collapse-horizontal" id="collapseWidthExample">
-    <div class="card shadow-lg border-0 rounded-4" style="width: 800px;">
-      
-      <div class="card-header bg-white border-0 d-flex justify-content-end p-3">
-        <button 
-          type="button" 
-          class="btn-close" 
-          data-bs-toggle="collapse" 
-          data-bs-target="#collapseWidthExample" 
-          aria-expanded="true" 
-          aria-controls="collapseWidthExample"
-          aria-label="Close"
-        ></button>
-      </div>
+<div class="container py-5 min-vh-100">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="collapse show" id="collapseWidthExample">
+        <div class="card shadow-lg border-0 rounded-4">
 
-      <div class="card-body p-5 pt-0">
-        
-        <h2 class="text-center mb-4 fw-bold text-primary">Edit Parking Lot Details</h2>
-        
-        <form class="row g-4" action="/edit_lots/{{lots.id}}" method="post">
-          
-          <div class="col-md-6">
-            <div class="form-floating">
-              <input type="text" class="form-control" id="locationName" name="location_name" placeholder="Location Name" value={{lots.lot_name}} >
-              <label for="locationName">Location Name</label>
-            </div>
+          <div class="card-header bg-white border-0 d-flex justify-content-end p-3">
+            <a href="{{ url_for('lot_list') }}"><button type="button" class="btn-close" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample"
+              aria-expanded="true" aria-controls="collapseWidthExample" aria-label="Close"></button></a>
           </div>
-          
-          <div class="col-md-6">
-            <div class="form-floating">
-              <input type="text" class="form-control" id="pinCode" name="pin_code" placeholder="Pin Code" value= {{lots.pin_code}}>
-              <label for="pinCode">Pin Code</label>
-            </div>
+
+          <div class="card-body p-4 p-md-5 pt-0">
+
+            <h2 class="text-center mb-4 fw-bold text-primary">Edit Parking Lot Details</h2>
+
+            <form class="row g-4" action="/edit_lots/{{lots.id}}" method="post">
+
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="locationName" name="location_name"
+                    placeholder="Location Name" value="{{ lots.lot_name }}" required>
+                  <label for="locationName">Location Name</label>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="pinCode" name="pin_code" placeholder="Pin Code"
+                    value="{{ lots.pin_code }}" required>
+                  <label for="pinCode">Pin Code</label>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="address" name="adress" placeholder="Address"
+                    value="{{ lots.city }}"required>
+                  <label for="address">Address (City/Area)</label>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="number" class="form-control" id="pricePerHour" name="price" placeholder="Price Per Hour"
+                    step="0.01" value="{{ lots.price }}"required >
+                  <label for="pricePerHour">Price Per Hour (₹)</label>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="number" class="form-control" id="totalSpots" name="spots"
+                    placeholder="Total Parking Spot" value="{{ spots_count }}" required>
+                  <label for="totalSpots">Total Parking Spots</label>
+                </div>
+              </div>
+
+              <div class="col-12 d-flex justify-content-center mt-5">
+                <button type="submit"
+                  class="btn btn-warning btn-lg px-5 py-3 rounded-pill shadow-sm w-100 w-md-75 w-lg-50">
+                  <i class="bi bi-check-circle me-2"></i> Save Changes
+                </button>
+              </div>
+            </form>
           </div>
-          
-          <div class="col-12">
-            <div class="form-floating">
-              <input type="text" class="form-control" id="address" name="adress" placeholder="Address" value= {{lots.city}} >
-              <label for="address">Address</label>
-            </div>
-          </div>
-          
-          <div class="col-md-6">
-            <div class="form-floating">
-              <input type="number" class="form-control" id="pricePerHour" name="price" placeholder="Price Per Hour" step="0.01" value={{lots.price}}>
-              <label for="pricePerHour">Price Per Hour (₹)</label>
-            </div>
-          </div>
-          
-          <div class="col-md-6">
-            <div class="form-floating">
-              <input type="number" class="form-control" id="totalSpots" name="spots" placeholder="Total Parking Spot" value={{spots_count}} readonly>
-              <label for="totalSpots">Total Parking Spots</label>
-            </div>
-          </div>
-          
-          <div class="col-12 d-flex align-items-center justify-content-center mt-5">
-            <button type="submit" class="btn btn-warning btn-lg px-5 py-3 rounded-pill shadow-sm">
-              <i class="bi bi-check-circle me-2"></i> Save Changes
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>

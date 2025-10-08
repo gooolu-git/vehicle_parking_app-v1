@@ -13,7 +13,7 @@ class User(db.Model):
     is_active_user = db.Column(db.Boolean, nullable = False , default = True)
 
     # spots where the users have acquired or booked the spot 
-    acquired_spot = db.relationship("Bookedspot", backref="user", lazy=True)
+    acquired_spot = db.relationship("Bookedspot", backref="user", lazy='dynamic',cascade='all, delete-orphan')
 
 
 # creating the parking place wehre many spots will be available
@@ -24,7 +24,7 @@ class ParkingLot(db.Model):
     city = db.Column(db.String(64), nullable = False)
     pin_code = db.Column(db.String(32), nullable = False)
     available_parking_spots = db.Column(db.Integer, nullable = False)
-    is_active_lot = db.Column(db.Boolean, nullable = False, default = False)
+    deleted_lot = db.Column(db.Boolean, nullable = False, default = False)
 
     # each parking lot will have many parking spots
     parking_spot = db.relationship("ParkingSpot", backref="parking_lot", lazy=True, cascade="all,delete")
