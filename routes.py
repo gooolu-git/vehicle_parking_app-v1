@@ -101,8 +101,8 @@ def login_page():
         flash("Username doesn't exist.")
         return redirect(url_for('login'))
     
-    is_active = User.query.filter_by(username=username , is_active_user=True).first()
-    if not is_active:
+    deleted_spot = User.query.filter_by(username=username , is_active_user=True).first()
+    if not deleted_spot:
         flash("You are Blocked .")
         return redirect(url_for('login'))
 
@@ -478,7 +478,7 @@ def edited_lot(sid):
     occupied_spots_count = ParkingSpot.query.filter_by(
         lot_id=sid, 
         occupied_status=True, 
-        is_active=True
+        deleted_spot=True
     ).count()
     
     # Get new spot count from form
@@ -506,9 +506,9 @@ def edited_lot(sid):
     # 5. Case 1: Increase spots (spot_diff > 0)
     if spot_diff > 0:
         # First, reactivate soft-deleted spots
-        reactivated_spots = ParkingSpot.query.filter_by(lot_id=sid, is_active=False).limit(spot_diff).all()
+        reactivated_spots = ParkingSpot.query.filter_by(lot_id=sid, deleted_spot=False).limit(spot_diff).all()
         for spot in reactivated_spots:
-            spot.is_active = True
+            spot.deleted_spot = True
         
         spot_diff -= len(reactivated_spots)
 
@@ -539,24 +539,24 @@ def edited_lot(sid):
                     lot_id=sid,
                     spot_number=new_spot_number,
                     occupied_status=False,
-                    is_active=True
+                    deleted_spot=True
                 ))
             db.session.add_all(new_spots)
 
     # 6. Case 2: Decrease spots (spot_diff < 0)
     elif spot_diff < 0:
-        # Soft-delete unoccupied spots (set is_active=False)
+        # Soft-delete unoccupied spots (set deleted_spot=False)
         spots_to_remove = ParkingSpot.query.filter_by(
             lot_id=sid, 
             occupied_status=False, 
-            is_active=True         
+            deleted_spot=True         
         ).order_by(
             ParkingSpot.spot_number.desc()
         ).limit(abs(spot_diff)).all()
         
         # Mark spots as inactive (soft-delete)
         for spot in spots_to_remove:
-            spot.is_active = False
+            spot.deleted_spot = False
 
     # 7. Final commit and redirect
     db.session.commit()
@@ -605,7 +605,7 @@ def user_list():
             'name': user.name,
             'spot_id': current_spot_id,
             'spot_number': current_spot_number,
-            'is_active': user.is_active_user
+            'deleted_spot': user.is_active_user
         })
     return render_template('user_list.html', usermodel=usermodel, user_count=user_count, bookings_count=bookings_count)
 

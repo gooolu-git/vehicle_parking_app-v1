@@ -63,14 +63,14 @@ Lots | ParkMatrix
 
             {% endif %}
           </td>
-          <td> {% if users.is_active %}
+          <td> {% if users.deleted_spot %}
             Active
             {% else %}
             Inactive
             {% endif %}
            </td>
           <td> 
-            {% if users.is_active %}
+            {% if users.deleted_spot %}
             <a href="{{ url_for('deactivate_user' , uid = users.id) }}" class="btn btn-danger">Freeze</a>
             {% else %}
             <a href="{{ url_for('deactivate_user' , uid = users.id) }}" class="btn btn-warning">Activate</a>
