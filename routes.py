@@ -562,12 +562,12 @@ def edited_lot(sid):
     db.session.commit()
     
     flash(f"Parking lot '{lot.lot_name}' updated successfully.")
-    return redirect(url_for(''))
+    return redirect(url_for('lot_list'))
 
 @app.route('/delete_spots/<int:sid>')
 @admin_required
 def delete_lots(sid):
-    lot = ParkingLot.query.get(sid)
+    lot = ParkingLot.query.filter_by(id=sid).first()
     if not lot:
         return redirect(url_for('lot_list'))
     db.session.delete(lot)
@@ -632,3 +632,98 @@ def deactivate_user(uid):
         
     db.session.commit()
     return redirect(url_for('user_list'))
+
+#------------------------------------------user_summary---------------------------------------------------------
+@app.route('/user_bookings_summary')
+@auth_required
+def user_bookings_summary():
+    user = User.query.get(session['user_id'])
+    user_id = user.id
+    if not user:
+        return render_template('error.html', message=f"User with ID {user_id} not found.")
+
+    # CRUCIAL: Filtering by Bookedspot.user_id == user_id ensures only the logged-in user's data is aggregated.
+    monthly_data = db.session.query(
+        func.strftime('%Y-%m', Bookedspot.entry_timing).label('year_month'),
+        func.count(Bookedspot.id).label('booking_count'),
+        func.sum(Bookedspot.parking_cost).label('total_expenditure')
+    ).filter(Bookedspot.user_id == user_id).group_by('year_month').order_by('year_month').all()
+
+    month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    
+    chart_labels = []
+    booking_counts = []
+    expenditure_data = []
+    
+    for row in monthly_data:
+        year_month_str = row.year_month
+        
+        month_index = int(year_month_str.split('-')[1]) - 1 
+        year_str = year_month_str.split('-')[0]
+        
+        label = f"{month_names[month_index]} {year_str}"
+        
+        chart_labels.append(label)
+        booking_counts.append(row.booking_count)
+        # Use 0.0 if parking_cost is None for a month (e.g., if no spots were released yet)
+        expenditure_data.append(row.total_expenditure or 0.0)
+
+    chart_json_data = {
+        'labels': chart_labels,
+        'booking_counts': booking_counts,
+        'expenditure_data': expenditure_data,
+        'username': user.name
+    }
+
+    return render_template('user_summary.html', chart_data=chart_json_data)
+
+
+
+
+#------------------------------------admin_summary----------------------------------
+@app.route('/admin_summary')
+@admin_required
+def admin_summary():
+    # Total spots that are NOT deleted
+    total_spots = db.session.query(func.count(ParkingSpot.id))
+    # total_revenue = db.session.query(func.sum(ParkingSpot.occupied_status=False)).scalar()
+    occupied_spots = ParkingSpot.query.filter_by(occupied_status=True,deleted_spot = True).count()
+    unoccupied_spots = ParkingSpot.query.filter_by(occupied_status=False,deleted_spot = True).count()
+    # Occupied spots: those with occupied_status = True and not deleted
+    
+
+    pie_chart_data = {
+        'labels': ['Occupied', 'Unoccupied'],
+        'data': [occupied_spots, unoccupied_spots]
+    }
+
+    # Monthly revenue from Bookedspot (only those with parking_cost not none)
+    monthly_revenue = db.session.query(
+        func.strftime('%Y-%m', Bookedspot.entry_timing).label('year_month'),
+        func.sum(Bookedspot.parking_cost).label('total_revenue')
+    ).filter(
+        Bookedspot.parking_cost != None
+    ).group_by('year_month').order_by('year_month').all()
+
+    month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    bar_labels = []
+    revenue_data = []
+
+    for row in monthly_revenue:
+        year_month_str = row.year_month
+        month_index = int(year_month_str.split('-')[1]) - 1
+        year_str = year_month_str.split('-')[0]
+        label = f"{month_names[month_index]} {year_str}"
+        bar_labels.append(label)
+        revenue_data.append(row.total_revenue or 0.0)
+
+    bar_chart_data = {
+        'labels': bar_labels,
+        'revenue': revenue_data
+    }
+
+    return render_template(
+        'admin_summary.html',
+        pie_chart_data=pie_chart_data,
+        bar_chart_data=bar_chart_data
+    )

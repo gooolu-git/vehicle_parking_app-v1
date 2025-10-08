@@ -1,0 +1,151 @@
+{% extends 'layout.html' %}
+{% block title %}
+Admin Summary | ParkMatrix
+{% endblock %}
+{% block style %}
+<style>
+  body {
+    background-color: #f4f7f6;
+    font-family: 'Inter', sans-serif;
+    padding-top: 20px;
+  }
+  .summary-card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+    padding: 2.5rem;
+    border: none;
+    transition: all 0.3s ease;
+    margin-bottom: 2rem;
+  }
+  .summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+  .chart-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 15px;
+  }
+  .header-section {
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 3rem;
+  }
+  .header-section h1 {
+    color: #198754;
+    font-weight: 700;
+  }
+  canvas {
+    width: 100% !important;
+    height: 350px !important;
+    display: block;
+  }
+  .p-3 {
+    min-height: 400px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="chart-container">
+
+    <header class="text-center header-section">
+      <h1 class="display-5 fw-bolder">Parking Lot Admin Overview</h1>
+      <p class="lead text-secondary mt-3">Visual summary across all parking lots.</p>
+    </header>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="summary-card">
+          <h2 class="h5 mb-4 text-center text-secondary fw-semibold">Occupied vs Unoccupied Spots</h2>
+          <div class="p-3" style="min-height:400px;">
+            <canvas id="pieChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="summary-card">
+          <h2 class="h5 mb-4 text-center text-secondary fw-semibold">Monthly Parking Revenue</h2>
+          <div class="p-3">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-5">
+      <a href="/" class="btn btn-success btn-lg rounded-pill px-5 shadow-lg">Return to Dashboard</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+  const pieData = JSON.parse('{{ pie_chart_data | tojson | safe }}');
+  const barData = JSON.parse('{{ bar_chart_data | tojson | safe }}');
+  document.addEventListener('DOMContentLoaded', function () {
+    // Render as doughnut for pie!
+    new Chart(document.getElementById('pieChart').getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: pieData.labels,
+        datasets: [{
+          data: pieData.data,
+          backgroundColor: ['#0d6efd', '#adb5bd']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+    new Chart(document.getElementById('barChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: barData.labels,
+        datasets: [{
+          label: 'Revenue (₹)',
+          data: barData.revenue,
+          backgroundColor: '#198754',
+          borderColor: '#145c32',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Revenue (₹)',
+            font: { weight: 'bold' }
+          },
+          ticks: {
+            callback: function(value) {
+              return '₹' + value.toFixed(2);
+            }
+          }
+        }},
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) label += ': ';
+                if (context.parsed.y !== null) label += '₹' + context.parsed.y.toFixed(2);
+                return label;
+              }
+            }
+          }
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

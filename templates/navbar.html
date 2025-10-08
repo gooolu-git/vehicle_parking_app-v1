@@ -26,7 +26,7 @@
                         style="font-size: larger; font-weight:bold; opacity: 0.8;">Lots</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#"
+                    <a class="nav-link text-white" href="{{ url_for('admin_summary' ) }}"
                         style="font-size: larger; font-weight:bold; opacity: 0.8;">Summary</a>
                 </li>
                 {% else %}
@@ -43,7 +43,7 @@
                         style="font-size: larger; font-weight:bold; opacity: 0.8;">History</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-info" href="#"
+                    <a class="nav-link text-info" href="{{ url_for('user_bookings_summary' ) }}"
                         style="font-size: larger; font-weight:bold; opacity: 0.8;">Summary</a>
                 </li>
                 {% endif %}

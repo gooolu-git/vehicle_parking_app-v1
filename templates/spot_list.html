@@ -9,6 +9,7 @@ Lot List | ParkMatrix
   </div>
 
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% if lots %}
     {% for lot in lots %}
     <div class="col">
       <div class="card h-100 border-0 shadow-lg rounded-4">
@@ -47,6 +48,11 @@ Lot List | ParkMatrix
       </div>
     </div>
     {% endfor %}
+  </div> 
+    {% else %}
+        <div class="fs-3 text-center   p-3 rounded-3 mb-5 ">
+    <span><i class="fa fa-star me-2 text-danger"></i>Lots Not Available</span>
   </div>
+    {% endif %}
 </div>
 {% endblock %}

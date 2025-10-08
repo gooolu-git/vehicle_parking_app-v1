@@ -4,14 +4,19 @@
 {% endblock %}
 {% block content %}
     <div class="container-fluid my-3">
-    <h1 class="text-center text-primary fw-bold mb-3"><i class="fa-solid fa-hand-pointer me-2"></i>Parking Spots Status</h1>
+    <h1 class="text-center text-primary fw-bold mb-3"><i class="fa-solid fa-crosshairs me-2"></i>Parking Spots Status</h1>
     
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-8">
             
             <div class="p-3 bg-light rounded-4 shadow-lg mb-3">
+                <h2 class="text-start dispaly-3 mb-3 border-bottom pb-2 text-danger">
+                    <i class="fa-solid fa-square-parking me-2"></i>lotcation: {{lots.lot_name}} 
+                </h2>
+                <h2 class="text-start fs-4 mb-3 text-secondary">
+                    <i class="fa-solid fa-bucket me-2"></i>occupied :{{ occupied_spots_count}} 
                 <h2 class="text-start fs-4 mb-3 border-bottom pb-2 text-secondary">
-                    <i class="fa-solid fa-square-parking me-2"></i>{{lots.lot_name}} <span class="ms-4">occupied :{{ occupied_spots_count}}</span><span class="ms-4">unoccupied :{{ unoccupied_spots_count}}</span>
+                    <i class="fa-solid fa-fill me-2"></i>unoccupied :{{ unoccupied_spots_count}}
                 </h2>
 
                 <div class="row row-cols-3 row-cols-md-4 row-cols-lg-6 g-3 justify-content-start">

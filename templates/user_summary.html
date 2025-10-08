@@ -1,0 +1,211 @@
+{% extends 'layout.html' %}
+{% block title %}
+User Summary | ParkMatrix
+{% endblock %}
+{% block style %}
+<style>
+  /* Custom styles for aesthetic appeal */
+  body {
+    background-color: #f4f7f6; /* Lighter, cooler background */
+    font-family: 'Inter', sans-serif;
+    padding-top: 20px;
+  }
+
+  .summary-card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border: none; /* Removed border, relying on shadow */
+    transition: all 0.3s ease;
+    margin-bottom: 2rem; /* Space between chart cards */
+  }
+
+  .summary-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .chart-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 15px;
+  }
+
+  .header-section {
+    padding-bottom: 2rem;
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 3rem;
+  }
+
+  .header-section h1 {
+    color: #007bff; /* Primary blue for prominence */
+    font-weight: 700;
+  }
+  
+  /* Ensure canvas elements are responsive within their containers */
+  canvas {
+      width: 100% !important;
+      height: 350px !important; /* Fixed height for better chart layout */
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="chart-container">
+
+    <!-- Header Section -->
+    <header class="text-center header-section">
+      <h1 class="display-5 fw-bolder">User Activity & Expenditure Summary</h1>
+      <p class="lead text-secondary mt-3">Visual trends for:
+        <span class="text-dark fw-bold">{{ chart_data.username }}</span>
+      </p>
+    </header>
+
+    {% if chart_data.labels | length == 0 %}
+    <!-- No Data Message -->
+    <div class="alert alert-warning text-center py-4 rounded-3" role="alert">
+        <h4 class="alert-heading">No Activity Recorded!</h4>
+        <p class="mb-0">This user has not made any car bookings that could be summarized.</p>
+    </div>
+    {% else %}
+    
+    <div class="row">
+        <!-- 1. Booking Count Chart Card -->
+        <div class="col-lg-6">
+            <div class="summary-card">
+              <h2 class="h5 mb-4 text-center text-secondary fw-semibold">Total Bookings Per Month</h2>
+              <div class="p-3">
+                <canvas id="bookingChart"></canvas>
+              </div>
+            </div>
+        </div>
+
+        <!-- 2. Expenditure Chart Card -->
+        <div class="col-lg-6">
+            <div class="summary-card">
+              <h2 class="h5 mb-4 text-center text-secondary fw-semibold">Total Parking Expenditure Per Month</h2>
+              <div class="p-3">
+                <canvas id="expenditureChart"></canvas>
+              </div>
+            </div>
+        </div>
+    </div>
+    
+    {% endif %}
+
+    <!-- Back Button/Action -->
+    <div class="text-center mt-5">
+      <a href="/" class="btn btn-primary btn-lg rounded-pill px-5 shadow-lg">
+        Return to Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+  // Get the data passed from Flask.
+  const chartData = JSON.parse('{{ chart_data | tojson | safe }}');
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (chartData.labels && chartData.labels.length > 0) {
+      
+      // --- 1. Booking Count Chart ---
+      const bookingCtx = document.getElementById('bookingChart').getContext('2d');
+      new Chart(bookingCtx, {
+        type: 'line',
+        data: {
+          labels: chartData.labels,
+          datasets: [{
+            label: 'Bookings',
+            data: chartData.booking_counts,
+            borderColor: '#007bff', /* Blue for bookings */
+            backgroundColor: 'rgba(0, 123, 255, 0.15)',
+            borderWidth: 3,
+            tension: 0.4,
+            pointRadius: 5,
+            pointBackgroundColor: '#007bff',
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Number of Bookings',
+                font: { weight: 'bold' }
+              },
+              ticks: { stepSize: 1, precision: 0 }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            title: { display: false }
+          }
+        }
+      });
+
+      // --- 2. Expenditure Chart ---
+      const expenditureCtx = document.getElementById('expenditureChart').getContext('2d');
+      new Chart(expenditureCtx, {
+        type: 'bar',
+        data: {
+          labels: chartData.labels,
+          datasets: [{
+            label: 'Total Cost',
+            data: chartData.expenditure_data,
+            backgroundColor: '#28a745', /* Green for money/expenditure */
+            borderColor: '#1e7e34',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Expenditure (Currency Unit)',
+                font: { weight: 'bold' }
+              },
+              ticks: {
+                  callback: function(value) {
+                      // Format as currency (simple prefix)
+                      return '₹' + value.toFixed(2);
+                  }
+              }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            title: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed.y !== null) {
+                            label += '₹' + context.parsed.y.toFixed(2);
+                        }
+                        return label;
+                    }
+                }
+            }
+          }
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}
