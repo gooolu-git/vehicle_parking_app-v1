@@ -1,24 +1,15 @@
 {% extends 'layout.html' %} 
 {% block title %} 
-User DashBoard | ParkMatrix {%
+Spot view| ParkMatrix {%
 endblock %}
 {% block content %}
-
 <div class="container my-5">
     <h2 class="text-start fs-1 text-primary mb-4 pb-2 border-bottom">
-        Active Bookings
+        Spot Details
     </h2>
-    {% if not booked_spot_details %}
-    <div class="row">
-        <div class="col-12 col-md-6 mb-3 ">
-            <p class="text-danger"><i class="fa fa-star"></i> {{message}}</p>
-            <a href="{{ url_for('spot_list' ) }}"><button class="btn btn-primary">Book Spot</button></a>
-        </div>
-    </div>
-    {% else %}
     <div class="p-3 bg-light rounded shadow-sm border">
         <h3 class="text-start fs-3 bg-warning rounded shadow-lg mb-3 p-2">
-            Booked Spot Id : {{booked_spot.id}}
+            Spot Id : {{spot.id}}
         </h3>
 
         <div class="row">
@@ -26,7 +17,7 @@ endblock %}
                 <div class="input-group">
                     <span class="input-group-text text-danger"><i class="fa fa-circle-user"></i></span>
                     <span class="input-group-text w-75">
-                        Registered Owner : {{user_booked.name}}
+                        Registered Owner : {{user.name}}
                     </span>
                 </div>
             </div>
@@ -34,7 +25,7 @@ endblock %}
                 <div class="input-group">
                     <span class="input-group-text text-danger"><i class="fa fa-calendar-alt"></i></span>
                     <span class="input-group-text w-75">
-                        Book Date: {{booked_spot_details.entry_timing.strftime('%d %b
+                        Book Date: {{spot.entry_timing.strftime('%d %b
                         %Y %I:%M %p')}}
                     </span>
                 </div>
@@ -44,7 +35,7 @@ endblock %}
                 <div class="input-group">
                     <span class="input-group-text text-danger"><i class="fa fa-bus"></i></span>
                     <span class="input-group-text w-75">
-                        Lot Id : {{booked_lot.id}}
+                        Lot Id : {{lot.id}}
                     </span>
                 </div>
             </div>
@@ -53,7 +44,7 @@ endblock %}
                 <div class="input-group">
                     <span class="input-group-text text-danger"><i class="fa fa-location-dot"></i></span>
                     <span class="input-group-text w-75">
-                        Location:{{booked_lot.lot_name}}
+                        Location:{{lot.lot_name}}
                     </span>
                 </div>
             </div>
@@ -61,7 +52,7 @@ endblock %}
                 <div class="input-group">
                     <span class="input-group-text text-danger"><i class="fa fa-address-card"></i></span>
                     <span class="input-group-text w-75">
-                        Address: {{booked_lot.city}}
+                        Address: {{lot.city}}
                     </span>
                 </div>
             </div>
@@ -70,7 +61,7 @@ endblock %}
                 <div class="input-group">
                     <span class="input-group-text text-danger"><i class="fa fa-car"></i></span>
                     <span class="input-group-text w-75">
-                        Vehicle No. : {{booked_spot_details.vehicle_number}}
+                        Vehicle No. : {{spot.vehicle_number}}
                     </span>
                 </div>
             </div>
@@ -79,23 +70,20 @@ endblock %}
                 <div class="input-group">
                     <span class="input-group-text text-danger"><i class="fa fa-inr"></i></span>
                     <span class="input-group-text w-75">
-                        Price/Day : {{booked_lot.price}}
+                        Price/Day : {{lot.price}}
                     </span>
                 </div>
             </div>
 
             <div class="col-6 col-md-6 mb-3 ">
-                <a href="{{ url_for('release_spot',book_id = booked_spot_details.id,spot_id=booked_spot_details.spot_id)}}"><button
+                <a href="{{ url_for('see_lots',sid=lot.id)}}"><button
                         class="btn btn-info w-80">
-                        <i class="fa fa-flag p-2"></i> Release Spot
+                        <i class="fa fa-flag p-2"></i> Return to Spots 
                     </button></a>
-
             </div>
         </div>
     </div>
 </div>
 </div>
-{% endif %}
-
 
 {% endblock %}

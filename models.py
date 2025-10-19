@@ -45,7 +45,7 @@ class ParkingSpot(db.Model):
 class Bookedspot(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     #many to many relation between the user and the parkingspot table
-    spot_id = db.Column(db.Integer , db.ForeignKey(ParkingSpot.id) , nullable = False)
+    spot_id = db.Column(db.Integer , db.ForeignKey(ParkingSpot.id)  , nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable = False)
 
     entry_timing = db.Column(db.DateTime, nullable=False, default=datetime.now)

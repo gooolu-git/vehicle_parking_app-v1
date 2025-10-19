@@ -18,20 +18,31 @@ Spot View | ParkMatrix
                 <div class="row row-cols-3 row-cols-md-4 row-cols-lg-6 g-3 justify-content-start">
                     {% for spot in spots %}
                         <div class="col">
-                            {% if not spot.occupied_status %}
+                            {% if spot.occupied_status  %}
                                 <a href="{{ url_for('book_this_spot', spot_id = spot.id) }}" class="text-decoration-none d-block h-100">
-                                    <button type="button" class="btn btn-primary w-100 h-100 shadow-sm border border-3 border-success-subtle rounded-3 d-flex flex-column align-items-center justify-content-between p-2">
+                                    <button type="button" class="btn btn-danger w-100 h-100 shadow-sm border border-3 border-success-subtle rounded-3 d-flex flex-column align-items-center justify-content-between p-2">
                                         <p class="fs-6 text-white-50 fw-light mb-1"><i class="fa-solid fa-key me-1"></i> {{ spot.spot_number }}</p>
                                         <div class="w-75 border-bottom border-1 border-white my-1"></div>
-                                        <p class="fs-2 fw-bold mb-0">A</p>
+                                        <p class="fs-2 fw-bold mb-0">O</p>
                                     </button>
                                 </a>
+                            
+                            {% elif not spot.deleted_spot %}
+                            <a href="{{ url_for('book_this_spot', spot_id = spot.id) }}"
+                                class="btn btn-warning w-100 h-100 shadow-sm border border-3 border-success-subtle rounded-3 d-flex flex-column align-items-center justify-content-between p-2">
+                                <p class="fs-6 text-white-50 fw-light mb-1"><i class="fa-solid fa-key me-1"></i> {{
+                                    spot.spot_number }}</p>
+                                <div class="w-75 border-bottom border-1 border-white my-1"></div>
+                                <p class="fs-2 fw-bold mb-0">D</p>
+                            </a>
                             {% else %}
-                                <div class="bg-danger text-white w-100 h-100 shadow-sm border border-3 border-danger-subtle rounded-3 d-flex flex-column align-items-center justify-content-between p-2">
-                                    <p class="fs-6 text-white-50 fw-light mb-1"><i class="fa-solid fa-key me-1"></i> {{ spot.spot_number }}</p>
-                                    <div class="w-75 border-bottom border-1 border-white my-1"></div>
-                                    <p class="fs-2 fw-bold mb-0">O</p>
-                                </div>
+                            <a href="{{ url_for('book_this_spot', spot_id = spot.id) }}"
+                                class="btn btn-primary w-100 h-100 shadow-sm border border-3 border-success-subtle rounded-3 d-flex flex-column align-items-center justify-content-between p-2">
+                                <p class="fs-6 text-white-50 fw-light mb-1"><i class="fa-solid fa-key me-1"></i> {{
+                                    spot.spot_number }}</p>
+                                <div class="w-75 border-bottom border-1 border-white my-1"></div>
+                                <p class="fs-2 fw-bold mb-0">A</p>
+                            </a>
                             {% endif %}
                         </div>
                     {% endfor %}

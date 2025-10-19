@@ -265,11 +265,12 @@ def book_this_spot(spot_id):
     if spot.occupied_status:
         flash("Spot is occupied.")
         return redirect(url_for('book_spot', lot_id=spot.lot_id))
-    
+
     # Check for active booking
     if Bookedspot.query.filter_by(user_id=user.id, vehicle_released=False).first():
         flash("You already have an active booking.")
         return redirect(url_for('user_dashboard'))
+    
     
     lot = ParkingLot.query.get(spot.lot_id)
     available = ParkingSpot.query.filter_by(occupied_status=False, lot_id=spot.lot_id).count()
@@ -279,17 +280,24 @@ def book_this_spot(spot_id):
 @auth_required
 def booked_spot(spot_id):
     spot = ParkingSpot.query.get(spot_id)
+
     if not spot:
         flash("Spot not available.")
         return redirect(url_for('user_dashboard'))
-        
+    is_deleted = spot.deleted_spot
+    if not is_deleted:
+        flash("cant book a deactive spot")
+        return redirect(url_for('book_spot', lot_id=spot.lot_id))
     user = User.query.get(session['user_id'])
     
     # Check again for active booking before committing
     if Bookedspot.query.filter_by(user_id=user.id, vehicle_released=False).first():
         flash("You already have an active booking.")
         return redirect(url_for('user_dashboard'))
+    
+    parked_spot = ParkingSpot.query.filter_by(id=spot_id).first()
 
+    
     vehicle_number = request.form.get("vehicle_number")
     user_id = session['user_id']
     
@@ -442,10 +450,13 @@ def create_lot():
     db.session.flush() # Get the new_lot.id before committing
 
     # Create parking spots for the new lot
-    new_spots = [ParkingSpot(lot_id=new_lot.id, spot_number='P{:03d}'.format(i+1), occupied_status=False) 
-                 for i in range(spots_count)]
-                 
-    db.session.add_all(new_spots)
+    def create_spot(lot_id,spots_count):
+        new_spots = [ParkingSpot(lot_id=lot_id, spot_number='P{:03d}'.format(i+1), occupied_status=False) 
+                 for i in range(spots_count)]      
+        db.session.add_all(new_spots)
+    
+    lot_id = new_lot.id
+    create_spot(lot_id,spots_count)
     db.session.commit()
     flash(f"Parking Lot '{lot_name}' created successfully with {spots_count} spots.")
     return redirect(url_for('lot_list'))
@@ -459,6 +470,56 @@ def see_lots(sid):
     occupied_spots_count = ParkingSpot.query.filter_by(occupied_status=True, lot_id=lots.id).count()
     
     return render_template('admin_spot_view.html', lots=lots, spots=spots ,unoccupied_spots_count=unoccupied_spots_count,occupied_spots_count=occupied_spots_count)
+@app.route('/view_this_spot_details/<int:sid>')
+@admin_required
+def view_this_spot_details(sid):
+    parked_spot = ParkingSpot.query.filter_by(id=sid,occupied_status=True).first()
+    if not parked_spot:
+        flash("Not a Booked Spot")
+    spot = Bookedspot.query.filter_by(spot_id=sid).first()
+    lot_id = parked_spot.lot_id
+    lot = ParkingLot.query.filter_by(id=lot_id).first()
+    user_id = spot.user_id
+    user = User.query.filter_by(id=user_id).first()
+    return render_template('admin_spot_user_details.html', spot=spot , parked_spot=parked_spot,lot=lot,user=user)
+
+@app.route('/deactivate_this_spot/<int:sid>')
+@admin_required
+def deactivate_this_spot(sid):
+    parked_spot = ParkingSpot.query.filter_by(id=sid).first()
+    if not parked_spot:
+        flash("Parking spot not found.")
+        return redirect(url_for('lot_list'))
+    
+    lot = ParkingLot.query.filter_by(id=parked_spot.lot_id).first()
+    return render_template('admin_deactivate_spot.html', parked_spot=parked_spot, lot=lot)
+
+@app.route('/deactivate_this_spot/<int:sid>',methods=["POST"])
+@admin_required
+def deactivated_spot(sid):
+    parked_spot = ParkingSpot.query.filter_by(id=sid).first()
+
+    if not parked_spot:
+        flash("Spot not found.") 
+        return redirect(url_for('lot_list'))
+
+    # see is the spot is occupied then we not delete
+    if parked_spot.occupied_status and not parked_spot.deleted_spot:
+        flash("Cannot deactivate an occupied spot")
+        return redirect(url_for('see_lots', sid=parked_spot.lot_id))
+    
+    # see between deleted and undelted
+    parked_spot.deleted_spot = not parked_spot.deleted_spot
+    db.session.commit() 
+
+    if parked_spot.deleted_spot:
+        flash(f"Spot {parked_spot.spot_number} successfully activated.")
+    else:
+        flash(f"Spot {parked_spot.spot_number} successfully dectivated.")
+    return redirect(url_for('see_lots', sid=parked_spot.lot_id))
+    
+
+
 
 @app.route('/edit_lots/<int:sid>')
 @admin_required
@@ -466,7 +527,42 @@ def edit_lots(sid):
     lots=ParkingLot.query.filter_by(id=sid).first()
     spots_count = ParkingSpot.query.filter_by(lot_id=sid).count()    
     return render_template('admin_edit_lot.html',lots=lots,spots_count=spots_count)
+
+
+
+# @app.route('/edit_lots/<int:sid>',methods=["POST"])
+# @admin_required
+# def edite_lot(sid):
+#     lot = ParkingLot.query.filter_by(id=sid).first()
+#     spots_occupied = ParkingSpot.query.filter_by(lot_id=sid,occupied_status=True)
+#     old_spot_count  = ParkingSpot.query.count()
+#     new_spot_count = int(request.form.get('spots'))
+
+#     lot.lot_name = request.form.get('location_name')
+#     lot.pin_code = request.form.get('pin_code')
+#     lot.city = request.form.get('adress') 
+#     lot.price = float(request.form.get('price'))
     
+#     #check if there is booked spot already then deny editing
+#     if spots_occupied:
+#         flash("Active boking found cant edit Spots")
+#         return redirect(url_for('lot_list'))
+#     lot.available_parking_spots =0
+#     db.session.flush()
+
+#     def create_spot(lot_id,spots_count):
+#         new_spots = [ParkingSpot(lot_id=lot_id, spot_number='P{:03d}'.format(i+1), occupied_status=False) 
+#                 for i in range(spots_count)]      
+#         db.session.add_all(new_spots)
+#     lot_id = lot.id
+#     create_spot(lot_id,new_spot_count)
+#     db.session.commit()
+#     flash(f"spots updated for {lot.lot_name}")
+#     return redirect(url_for('lot_list'))
+
+    
+        
+
 @app.route('/edit_lots/<int:sid>', methods=["POST"])
 @admin_required
 def edited_lot(sid):
@@ -534,7 +630,7 @@ def edited_lot(sid):
                 # Calculate the new spot number
                 new_spot_number_int = current_max + i + 1
                 new_spot_number = str(new_spot_number_int)
-                
+                #----------look_here---
                 new_spots.append(ParkingSpot(
                     lot_id=sid,
                     spot_number=new_spot_number,
@@ -568,9 +664,14 @@ def edited_lot(sid):
 @admin_required
 def delete_lots(sid):
     lot = ParkingLot.query.filter_by(id=sid).first()
+    active_bookings = ParkingSpot.query.filter_by(lot_id = sid ,occupied_status=True).count()
     if not lot:
         return redirect(url_for('lot_list'))
+    if active_bookings:
+        flash(f"{lot.lot_name} has active bookings cant delete it")
+        return redirect(url_for('lot_list'))
     db.session.delete(lot)
+    db.session.flush()
     db.session.commit()
     flash(f"{lot.lot_name } was successfully deleted !")
     return redirect(url_for('lot_list'))

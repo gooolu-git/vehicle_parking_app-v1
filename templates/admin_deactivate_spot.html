@@ -1,0 +1,79 @@
+{% extends 'layout.html' %}
+{% block title %}
+Spot view| ParkMatrix {%
+endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2 class="text-start fs-1 text-primary mb-4 pb-2 border-bottom">
+    Spot Details
+  </h2>
+  <div class="p-3 bg-light rounded shadow-sm border">
+    <h3 class="text-start fs-3 bg-warning rounded shadow-lg mb-3 p-2">
+      Spot Id : {{parked_spot.id}}
+    </h3>
+
+    <div class="row">
+      <div class="input-group mb-3">
+        <span class="input-group-text text-danger"><i class="fa fa-flag"></i></span>
+        <span class="input-group-text w-75">
+          {% if parked_spot.deleted_spot %}
+          Spot Status : Active
+          {% else %}
+          Spot Status : DeActive
+          {% endif %}
+        </span>
+      </div>
+
+      <div class="col-12 col-md-6 mb-3">
+        <div class="input-group">
+          <span class="input-group-text text-danger"><i class="fa fa-bus"></i></span>
+          <span class="input-group-text w-75">
+            Lot Id : {{lot.id}}
+          </span>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 mb-3">
+        <div class="input-group">
+          <span class="input-group-text text-danger"><i class="fa fa-location-dot"></i></span>
+          <span class="input-group-text w-75">
+            Location:{{lot.lot_name}}
+          </span>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 mb-3">
+        <div class="input-group">
+          <span class="input-group-text text-danger"><i class="fa fa-address-card"></i></span>
+          <span class="input-group-text w-75">
+            Address: {{lot.city}}
+          </span>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 mb-3">
+        <div class="input-group">
+          <span class="input-group-text text-danger"><i class="fa fa-inr"></i></span>
+          <span class="input-group-text w-75">
+            Price/Day : {{lot.price}}
+          </span>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-6 mb-3 ">
+        {% if parked_spot.deleted_spot %}
+        <form action="/deactivate_this_spot/{{parked_spot.id}}" method="POST">
+          <button class="btn btn-danger" type="submit">
+            <i class="fa fa-bell p-1"></i> Deactivate Spot</button>
+        </form>
+        {% else %}
+        <form action="/deactivate_this_spot/{{parked_spot.id}}" method="POST">
+          <button class="btn btn-primary" type="submit">
+            <i class="fa fa-bell p-2"></i> Activate Spot</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock %}
