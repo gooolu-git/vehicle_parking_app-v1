@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, url_for, redirect, session
 from app import app
-from models import db, User, ParkingLot, ParkingSpot ,Bookedspot
+from models.models import db, User, ParkingLot, ParkingSpot ,Bookedspot
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps 
 from sqlalchemy import func
