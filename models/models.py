@@ -27,7 +27,7 @@ class ParkingLot(db.Model):
     deleted_lot = db.Column(db.Boolean, nullable = False, default = False)
 
     # each parking lot will have many parking spots
-    parking_spot = db.relationship("ParkingSpot", backref="parking_lot", lazy=True, cascade="all,delete")
+    parking_spot = db.relationship("ParkingSpot", backref="parking_lot", lazy=True,cascade="all, delete",)
 
 
 class ParkingSpot(db.Model):
@@ -38,7 +38,7 @@ class ParkingSpot(db.Model):
     spot_number = db.Column(db.String(6), nullable = False)
     deleted_spot = db.Column(db.Boolean,default=True,nullable = False)
     # each parking spot can be booked many times
-    booked_spots = db.relationship("Bookedspot", backref="parking_spot", lazy=True)
+    booked_spots = db.relationship("Bookedspot", backref="parking_spot", lazy=True,cascade="all, delete",)
 
 
 # spots where the users have acquired or booked the spot 

@@ -528,137 +528,38 @@ def edit_lots(sid):
     spots_count = ParkingSpot.query.filter_by(lot_id=sid).count()    
     return render_template('admin_edit_lot.html',lots=lots,spots_count=spots_count)
 
-
-
-# @app.route('/edit_lots/<int:sid>',methods=["POST"])
-# @admin_required
-# def edite_lot(sid):
-#     lot = ParkingLot.query.filter_by(id=sid).first()
-#     spots_occupied = ParkingSpot.query.filter_by(lot_id=sid,occupied_status=True)
-#     old_spot_count  = ParkingSpot.query.count()
-#     new_spot_count = int(request.form.get('spots'))
-
-#     lot.lot_name = request.form.get('location_name')
-#     lot.pin_code = request.form.get('pin_code')
-#     lot.city = request.form.get('adress') 
-#     lot.price = float(request.form.get('price'))
-    
-#     #check if there is booked spot already then deny editing
-#     if spots_occupied:
-#         flash("Active boking found cant edit Spots")
-#         return redirect(url_for('lot_list'))
-#     lot.available_parking_spots =0
-#     db.session.flush()
-
-#     def create_spot(lot_id,spots_count):
-#         new_spots = [ParkingSpot(lot_id=lot_id, spot_number='P{:03d}'.format(i+1), occupied_status=False) 
-#                 for i in range(spots_count)]      
-#         db.session.add_all(new_spots)
-#     lot_id = lot.id
-#     create_spot(lot_id,new_spot_count)
-#     db.session.commit()
-#     flash(f"spots updated for {lot.lot_name}")
-#     return redirect(url_for('lot_list'))
-
-    
-        
-
 @app.route('/edit_lots/<int:sid>', methods=["POST"])
 @admin_required
 def edited_lot(sid):
-    # 1. Fetch lot details and current spot counts
-    lot = ParkingLot.query.filter_by(id=sid).first_or_404() 
-    old_spots_count = lot.available_parking_spots 
-    
-    # Counting currently occupied and active spots
-    occupied_spots_count = ParkingSpot.query.filter_by(
-        lot_id=sid, 
-        occupied_status=True, 
-        deleted_spot=True
-    ).count()
-    
-    # Get new spot count from form
-    new_spots_count = int(request.form.get('spots'))
+    lot = ParkingLot.query.filter_by(id=sid).first_or_404()
+    active_bookings = ParkingSpot.query.filter_by(lot_id=sid, occupied_status=True).count()
+    new_spot_count = int(request.form.get('spots'))
 
-    # 2. Check: New spots must be >= occupied spots
-    if occupied_spots_count > new_spots_count:
-        db.session.rollback()
-        flash(f"Error: New spots ({new_spots_count}) less than occupied spots ({occupied_spots_count}).")
-        return redirect(url_for('edit_lots', sid=lot.id))
-
-    # 3. Update main lot details in session
     lot.lot_name = request.form.get('location_name')
     lot.pin_code = request.form.get('pin_code')
-    lot.city = request.form.get('adress') 
+    lot.city = request.form.get('adress')
     lot.price = float(request.form.get('price'))
-    lot.available_parking_spots = new_spots_count
-    
-    # Flush: Lot table data updated temporarily
-    db.session.flush() 
 
-    # 4. Calculate spot difference
-    spot_diff = new_spots_count - old_spots_count
+    if active_bookings > 0:
+        flash("Active bookings exist! Spot count cannot be changed.")
+    else:
+        old_spots = ParkingSpot.query.filter_by(lot_id=sid).all()
+        for spot in old_spots:
+            db.session.delete(spot)
+        new_spots = [
+            ParkingSpot(
+                lot_id=sid,
+                spot_number='P{:03d}'.format(i + 1),
+                occupied_status=False
+            ) for i in range(new_spot_count)
+        ]
+        db.session.add_all(new_spots)
+        lot.available_parking_spots = new_spot_count
 
-    # 5. Case 1: Increase spots (spot_diff > 0)
-    if spot_diff > 0:
-        # First, reactivate soft-deleted spots
-        reactivated_spots = ParkingSpot.query.filter_by(lot_id=sid, deleted_spot=False).limit(spot_diff).all()
-        for spot in reactivated_spots:
-            spot.deleted_spot = True
-        
-        spot_diff -= len(reactivated_spots)
-
-        # If needed, create new spots with unique numbering
-        if spot_diff > 0:
-            # CORRECTED LOGIC: Find the highest existing spot number
-            # We query the max of the spot_number column, cast to integer
-            # We use db.session.query(func.max(CAST(ParkingSpot.spot_number AS INTEGER)))
-            # Simple assumption: spot_number column contains only integer strings (e.g., '1', '2', '15')
-            max_spot_number_str = db.session.query(func.max(ParkingSpot.spot_number)).filter_by(lot_id=sid).scalar()
-            
-            # Convert max number to int, default to 0 if no spots exist
-            try:
-                current_max = int(max_spot_number_str) if max_spot_number_str else 0
-            except ValueError:
-                # Fallback if spot_number is non-numeric (e.g., 'A1'). 
-                # If this happens, you need to implement custom parsing logic.
-                # For this example, we'll revert to counting, but this might cause future bugs if numbers are skipped.
-                current_max = ParkingSpot.query.filter_by(lot_id=sid).count()
-                
-            new_spots = []
-            for i in range(spot_diff):
-                # Calculate the new spot number
-                new_spot_number_int = current_max + i + 1
-                new_spot_number = str(new_spot_number_int)
-                #----------look_here---
-                new_spots.append(ParkingSpot(
-                    lot_id=sid,
-                    spot_number=new_spot_number,
-                    occupied_status=False,
-                    deleted_spot=True
-                ))
-            db.session.add_all(new_spots)
-
-    # 6. Case 2: Decrease spots (spot_diff < 0)
-    elif spot_diff < 0:
-        # Soft-delete unoccupied spots (set deleted_spot=False)
-        spots_to_remove = ParkingSpot.query.filter_by(
-            lot_id=sid, 
-            occupied_status=False, 
-            deleted_spot=True         
-        ).order_by(
-            ParkingSpot.spot_number.desc()
-        ).limit(abs(spot_diff)).all()
-        
-        # Mark spots as inactive (soft-delete)
-        for spot in spots_to_remove:
-            spot.deleted_spot = False
-
-    # 7. Final commit and redirect
     db.session.commit()
-    
     flash(f"Parking lot '{lot.lot_name}' updated successfully.")
     return redirect(url_for('lot_list'))
+
 
 @app.route('/delete_spots/<int:sid>')
 @admin_required
