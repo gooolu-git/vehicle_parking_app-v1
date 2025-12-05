@@ -71,12 +71,9 @@ Role checking (auth_required / admin_required decorators)
 
 ## Authors
 
-- [@23f2003761](https://github.com/23f2003761)
+- [@gooolu-git](https://github.com/gooolu-git)
 
 
-## License
-
-[IIT Madras] This is project of Mad1 
 
 ## Installation
 
